@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "分享发布成功";
+}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="widget-container fluid-height clearfix">
+            <div class="heading">
+                <i class="fa fa-check"></i>@ViewBag.Title
+            </div>
+            <hr />
+            <div class="widget-content padded">
+                <p>
+                    @Html.ActionLink("查看分享页面", "Details", new { id = ViewBag.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("再发一篇分享", "Edit", null, new { @class = "btn btn-success" })
+                    @Html.ActionLink("管理我的分享", "Manage", null, new { @class = "btn btn-info" })
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SolrNet</id>
+    <version>0.4.0.4001</version>
+    <title>SolrNet</title>
+    <authors>Mauricio Scheffer and contributors</authors>
+    <owners>Mauricio Scheffer and contributors</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://code.google.com/p/solrnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Apache Solr client</description>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CommonServiceLocator" version="[1.0]" />
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,37 @@
+﻿@model Domain.Models.Blog
+
+@{
+    ViewBag.Title = "删除分享";
+}
+
+<h4>确定要删除这篇分享吗?</h4>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="确定删除" class="btn btn-danger" />
+            @Html.ActionLink("返回我的分享", "Manage",null,new{@class="btn btn-default"})
+        </div>
+    }
+</div>

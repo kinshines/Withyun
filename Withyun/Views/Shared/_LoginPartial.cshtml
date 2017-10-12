@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNet.Identity
+
+<div class="pull-right">
+    <ul class="nav navbar-nav pull-right">
+        @if (Request.IsAuthenticated)
+        {
+            <li class="dropdown notifications hidden-xs">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notificationDropdown">
+                    <span aria-hidden="true" class="se7en-envelope"></span>
+                    <div class="sr-only">
+                        消息
+                    </div>
+                </a>
+                <ul class="dropdown-menu">
+                </ul>
+            </li>
+            <li class="dropdown user hidden-xs">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <img width="34" height="34" src="@Html.Action("GetAvatar","Manage")" />@User.Identity.Name<b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("Manage", "Blog")">
+                        <i class="fa fa-user"></i>个人中心
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index","Manage")">
+                        <i class="fa fa-gear"></i>账号设置
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Logoff","Account")">
+                        <i class="fa fa-sign-out"></i>退出
+                    </a>
+                </li>
+            </ul>
+        </li>
+        }
+        else
+        {
+            <li>
+                @Html.ActionLink("登录","Login","Account")
+            </li>
+            <li>
+                @Html.ActionLink("注册", "Register", "Account")
+           </li>
+        }
+        
+    </ul>
+</div>
+

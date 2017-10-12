@@ -1,0 +1,60 @@
+﻿@model SolrNet.SolrQueryResults<Domain.Models.Blog>
+
+@{
+    ViewBag.Title = ViewBag.wd+" - 搜索结果";
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="widget-container fluid-height clearfix">
+            <div class="widget-content padded">
+                <div class="num">
+                    找到约 @Model.NumFound 条结果
+                </div>
+                @foreach (var item in Model)
+                {
+                    <div class="result c-container">
+                        <h3 class="t">
+                            <a href="@Url.Action("Details","Blog",new{id=item.Id})" target="_blank">@Html.Raw(item.Title)</a>
+                        </h3>
+                        <div>
+                            @Html.Raw(item.Content)
+                        </div>
+                        <div>
+                            @Html.ActionLink("www.withyun.com/blog/details/" + item.Id, "Details", "Blog", new { id = item.Id }, new { target = "_blank", @class = "c-showurl" })
+                        </div>
+                    <div>
+                        <i class="fa fa-user"></i><a href="">&nbsp;&nbsp;@Html.DisplayFor(modelItem=>item.UserName)&nbsp;&nbsp;</a>
+                        <i class="fa fa-calendar"></i>&nbsp;&nbsp;@Html.DisplayFor(modelItem=>item.TimeStamp,"LongDateMinute")
+                    </div>
+                </div>
+                }
+                
+                <div class="text-left">
+                    <ul class="pagination">
+                        @if (ViewBag.pageNumber > 1)
+                        {
+                            <li>@Html.ActionLink("«", "Index", new { page = ViewBag.pageNumber - 1, wd = ViewBag.wd })</li>
+                        }
+                        @for (int index = Math.Max(ViewBag.pageNumber - 5, 1); index <= Math.Min(Math.Max(ViewBag.pageNumber + 5, 10), ViewBag.pageCount); index++)
+                        {
+                            if (index == ViewBag.pageNumber)
+                            {
+                                <li class="active"><a>@index</a></li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink(index.ToString(), "Index", new { page = index, wd = ViewBag.wd })</li>
+                            }
+                        }
+                        @if (ViewBag.pageNumber < ViewBag.pageCount)
+                        {
+                            <li>@Html.ActionLink("»", "Index", new { page = ViewBag.pageNumber + 1, wd = ViewBag.wd })</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3"></div>
+</div>

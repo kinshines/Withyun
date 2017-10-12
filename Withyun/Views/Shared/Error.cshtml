@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "出错啦";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+<div class="fourofour-container">
+    <h1>
+        404
+    </h1>
+    <h2>
+        我们好像迷失了.
+    </h2>
+    <a class="btn btn-lg btn-default-outline" href="@Url.Action("Index","Home")"><i class="fa fa-home"></i>返回首页</a>
+</div>
+@section scripts
+{
+    <script>
+        $(function () {
+            $('body').addClass('fourofour');
+        })
+    </script>
+}

@@ -1,0 +1,41 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<Domain.Models.Recomment>
+
+<div class="widget-container fluid-height">
+    <div class="heading">
+        <div class="yk-title">
+            @ViewBag.Title
+        </div>
+    </div>
+    <div class="widget-content padded">
+        <div class="row">
+            @foreach (var recomment in Model)
+            {
+                <div class="col-md-2 col-sm-3 col-xs-6">
+                    <div class="v">
+                        <div class="v-thumb">
+                            <i class="bg"></i>
+                            <img src="@recomment.CoverUrl" alt="@recomment.Title"/>
+                        </div>
+                        <div class="v-link">
+                            <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank" title="@recomment.Title"></a>
+                        </div>
+                        <div class="v-meta vb">
+                            <div class="v-meta-title">
+                                <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank">@recomment.Title</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        第 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 页，共 @Model.PageCount 页
+
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new
+                        {
+                            page,
+                            id = ViewBag.Category
+                        }))
+    </div>
+</div>

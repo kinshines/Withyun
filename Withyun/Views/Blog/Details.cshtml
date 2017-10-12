@@ -1,0 +1,135 @@
+﻿@using Domain.Models
+@model Domain.Models.Blog
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="widget-container fluid-height clearfix list">
+            <div class="widget-content padded">
+                <h3>@Html.DisplayFor(model => model.Title)</h3>
+                <div>
+                    <i class="fa fa-calendar"></i> @Html.DisplayFor(model => model.TimeStamp,"LongDateMinute") &nbsp;&nbsp;
+                    <i class="fa fa-user"></i> @Html.ActionLink(Model.UserName,"Index","Profile",new{id=Model.UserId},new{target="_blank"}) &nbsp;&nbsp;
+                    <i class="fa fa-comments-o"></i><a href="#comments"> @Html.DisplayFor(model => model.Reviews.Count) 条评论</a> &nbsp;&nbsp;
+                    <i class="fa fa-thumbs-o-up"></i> @Html.DisplayFor(model => model.VoteUps.Count) 个赞
+                </div>
+                <hr/>
+                @Html.DisplayFor(model => model.HtmlContent)
+                <input type="hidden" id="blogDetail-blogId" value="@Model.Id" />
+                <input type="hidden" id="blogDetail-blogTitle" value="@Model.Title" />
+                <input type="hidden" id="blogDetail-blogUserId" value="@Model.UserId" />
+                <hr/>
+                <div class="heading tool-panel">
+                    <a href="javascript:void(0)" data-name="voteup"><i class="fa fa-thumbs-o-up"></i>赞</a>
+                    <a href="javascript:void(0)" data-name="share"><i class="fa fa-share"></i>分享</a>
+                    <a href="javascript:void(0)" data-name="collection"><i class="fa fa-bookmark-o"></i>收藏</a>
+                    <a href="javascript:void(0)" data-name="votedown"><i class="fa fa-thumbs-o-down"></i>没有帮助</a>
+                    <a href="javascript:void(0)" data-name="report"><i class="fa fa-bell-o"></i>举报</a>
+                </div>
+            </div>
+            <div class="heading">
+                <i class="fa fa-link"></i>分享链接
+            </div>
+            <div class="widget-content">
+                <ul>
+                    @foreach (var link in Model.Links)
+                    {
+                        <li>
+                            <div class="row">
+                                <div class="col-md-9 link-url">
+                                    <a href="@link.FixedUrl" target="_blank" data-linkId="@link.Id">@Html.DisplayFor(modelItem => link.Url)</a>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-xs btn-info btn-copy"><i class="fa fa-copy"></i>复制链接</button>
+                                    <button class="btn btn-xs btn-warning btn-invalidlink"><i class="fa fa-chain-broken"></i>报告链接失效</button>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="widget-container fluid-height">
+            <div class="heading">
+                <i class="fa fa-usd"></i>如果您觉得我的分享对您有帮助，请随意打赏，哪怕是一分钱，也将是我持续分享的动力
+            </div>
+            <div class="widget-content clearfix">
+                <div class="col-md-6 text-center">
+                    <h4>支付宝扫码</h4>
+                    <img src="@Html.Action("GetAlipayImg","Manage",new{id=Model.UserId})" />
+                    <div>
+                        <a href="@Url.Action("AlipayTutorial","Manage")" target="_blank">如何设置支付宝二维码？</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h4>微信扫码</h4>
+                    <img src="@Html.Action("GetWechatImg", "Manage", new { id = Model.UserId })" />
+                    <div>
+                        <a href="@Url.Action("WechatTutorial","Manage")" target="_blank">如何设置微信二维码？</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="widget-container scrollable chat chat-page" id="comments">
+            <div class="heading">
+                <i class="fa fa-comments"></i>评论
+            </div>
+            <div class="widget-content padded">
+                <ul>
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <li>
+                            <img width="30" height="30" src="@Html.Action("GetAvatar", "Manage", new { id = review.UserId })">
+                            <div class="bubble">
+                                <a class="user-name" target="_blank" href="@Url.Action("Index","Profile",new{id=review.UserId})">@Html.DisplayFor(modelItem=>review.UserName)</a>
+                                <p class="message">
+                                    @Html.DisplayFor(modelItem => review.Content)
+                                </p>
+                                <p class="time">
+                                    <strong>@Html.DisplayFor(modelItem => review.TimeStamp,"DateMinute")</strong>
+                                </p>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="post-message">
+                @using (Ajax.BeginForm("Create", "Review", null, new AjaxOptions {OnSuccess = "reviewSuccess"},new {id="reviewform"}))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden"name="blogId" value="@Model.Id"/>
+                    <input type="hidden" name="distributor" value="@Model.UserId"/>
+                    <input type="hidden" name="blogTitle" value="@Model.Title"/>
+                    <input type="hidden" name="userName" value="@Model.UserName"/>
+                    <input class="form-control" placeholder="留下你的评论……" type="text" name="content">
+                    <input type="submit" value="发送" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="partLoginModal">
+</div>
+@Html.Partial("_Report", new Report { BlogId = Model.Id })
+@section scripts{
+    <script>
+        $(function() {
+            getPanelStatus();
+            initialPanel();
+            initialReport();
+            initialCopyBtn();
+            initialInvalidBtn();
+            fixCommentHeight();
+        });
+    </script>
+
+    <script>
+        window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdMiniList": false, "bdPic": "", "bdStyle": "2", "bdSize": "16" }, "slide": { "type": "slide", "bdImg": "0", "bdPos": "left", "bdTop": "100" } };
+        with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+    </script>
+}

@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "绑定微信二维码";
+}
+<div class="page-title">
+    <h3>
+        @ViewBag.Title
+    </h3>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="@Url.Action("ChangePassword", "Manage", null)">
+                    <p>
+                        修改密码
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("ChangeEmail", "Manage", null)">
+                    <p>
+                        修改邮箱
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("UploadAvatar", "Manage", null)">
+                    <p>
+                        头像设置
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("UploadAlipay", "Manage", null)">
+                    <p>
+                        支付宝收款二维码
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item active">
+                <a href="@Url.Action("UploadWechat", "Manage", null)">
+                    <p>
+                        微信收款二维码
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-sm-9">
+        <div class="widget-container fluid-height clearfix">
+            <div class="heading">
+                <i class="fa fa-reorder"></i>@ViewBag.Title
+            </div>
+            <div class="widget-content padded avator-btn-wrap">
+                @using (Html.BeginForm("UploadWeChat", "Manage", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <img src="@Html.Action("GetWeChatImg")">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <a href="javascript:void(0)" class="btn btn-primary">上传二维码</a>
+                            <input type="file" title="上传二维码" name="fileField" id="upload" onchange="submit()" accept="image/*" />  
+                        </div>
+                        <div class="col-md-1 col-md-offset-1">
+                            @Html.ActionLink("删除二维码","DeleteWechat",null,new{@class="btn btn-danger"})
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

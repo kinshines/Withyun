@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NLog</id>
+    <version>4.3.6</version>
+    <title>NLog</title>
+    <authors>Kim Christensen, Julian Verdurmen</authors>
+    <owners>Kim Christensen, Julian Verdurmen</owners>
+    <licenseUrl>http://raw.github.com/NLog/NLog/master/LICENSE.txt</licenseUrl>
+    <projectUrl>http://nlog-project.org/</projectUrl>
+    <iconUrl>http://nlog-project.org/N.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>NLog is a logging platform for .NET with rich log routing and management capabilities. It can help you produce and manage high-quality logs for your application regardless of its size or complexity.
+This package installs NLog.dll with includes core logging functionality.
+For your main project also need to install "NLog Configuration" package.</description>
+    <summary>NLog - Advanced .NET and Silverlight Logging</summary>
+    <releaseNotes>## Features
+- [#1531] Support Android 4.4 (@304NotModified)
+- [#1551] Addded CompoundLayout (@luigiberrettini)
+
+## Fixes
+- [#1548] Bugfix: Can't update EventLog's Source property (@304NotModified, @Page-Not-Found)
+- [#1553] Bugfix: Throw configException when registering invalid extension assembly/type. (@304NotModified, @Jeinhaus)
+- [#1547] LogReceiverWebServiceTarget is leaking communication channels (@MartinTherriault)</releaseNotes>
+    <language>en-US</language>
+    <tags>logging log tracing logfiles NLog database eventlog email wcf</tags>
+  </metadata>
+</package>

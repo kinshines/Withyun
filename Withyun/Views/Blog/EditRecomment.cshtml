@@ -1,0 +1,147 @@
+﻿
+@using Domain.Models
+@model Blog
+
+@{
+    ViewBag.Title = "编辑分享";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-container fluid-height clearfix">
+            <div class="heading">
+                <i class="fa fa-edit"></i>@ViewBag.Title
+            </div>
+            <hr />
+            <div class="widget-content padded">
+                @using (Html.BeginForm("EditRecomment", "Blog", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+
+                        @Html.ValidationSummary(true)
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.UserName)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.HtmlContent, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.HtmlContent)
+                                @Html.ValidationMessageFor(model => model.HtmlContent)
+                                <div id="tempContent" style="display: none"></div>
+                                <input type="hidden" id="Content" name="Content" />
+                            </div>
+                        </div>
+                        @foreach (Link item in Model.Links)
+                        {
+                            <div class="form-group">
+                                <label class="control-label col-md-2">链接</label>
+                                <div class="col-md-3">
+                                    <input name="link" class="form-control" value="@item.Url"/>
+                                    <input name="linkId" type="hidden" value="@item.Id"/>
+                                </div>
+                                <label class="control-label col-md-1">描述</label>
+                                <div class="col-md-4">
+                                    <input name="linkDescription" class="form-control" value="@item.Description" />
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-danger" href="javascript:void(0)" onclick="deleteLink(this)"><i class="fa fa-trash"></i>删除链接</a>
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <label class="control-label col-md-2">推荐短评</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" name="recommentTitle"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">封面</label>
+                            <div class="col-md-10">
+                                <input type="file" title="上传封面" name="fileField" id="upload" accept="image/*" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">推荐分类</label>
+                            <div class="col-md-10">
+                                <select class="select2able" multiple="" name="selectedCategory">
+                                    <option value="0">剧集</option>
+                                    <option value="1">电影</option>
+                                    <option value="2">美剧</option>
+                                    <option value="3">韩剧</option>
+                                    <option value="4">日剧</option>
+                                    <option value="5">动漫</option>
+                                    <option value="6">音乐</option>
+                                    <option value="7">游戏</option>
+                                    <option value="8">图书</option>
+                                    <option value="9">综艺</option>
+                                    <option value="10">软件</option>
+                                    <option value="11">资料</option>
+                                    <option value="12">教育</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">链接</label>
+                            <div class="col-md-8">
+                                <input name="link" class="form-control" />
+                                <span>推荐使用<a href="http://pan.baidu.com/" target="_blank">百度云</a>、<a href="http://yunpan.360.cn/" target="_blank">360云盘</a> 等网盘方式分享文件</span>
+                            </div>
+                            <div class="col-md-2">
+                                <a class="btn btn-danger" href="javascript:void(0)" onclick="deleteLink(this)"><i class="fa fa-trash"></i>删除链接</a>
+                            </div>
+                        </div>
+                        <div class="form-group hidden" id="copylink">
+                            <label class="control-label col-md-2">链接</label>
+                            <div class="col-md-8">
+                                <input name="link" class="form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <a class="btn btn-danger" href="javascript:void(0)" onclick="deleteLink(this)"><i class="fa fa-trash"></i>删除链接</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <a class="btn btn-success" href="javascript:addLink()"><i class="fa fa-plus"></i>增加链接</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i>发布分享</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('#HtmlContent').summernote({
+                height: 300,
+                lang: 'zh-CN',
+                toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['picture', 'link']],
+                ['fullscreen', ['fullscreen']]
+                ],
+                callbacks: {
+                    onPaste: pasteSummmernote,
+                    onImageUpload: uploadImages
+                }
+            });
+
+            $('#HtmlContent').summernote('code', $('#HtmlContent').val());
+            $('form').submit(submitSummernote);
+            $('.select2able').select2();
+        });
+    </script>
+}
+

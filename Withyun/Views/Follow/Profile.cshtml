@@ -1,0 +1,26 @@
+﻿
+<div class="widget-container fluid-height">
+    <div class="widget-content padded">
+        <div class="profile-info clearfix">
+            <img width="220" height="220" class="social-avatar pull-left" src="@Url.Action("GetUserImg", "Manage", new { id = ViewBag.UserId })">
+            <div class="profile-details">
+                <p>
+                    <h3>@ViewBag.UserName</h3>
+                </p>
+                @using (Ajax.BeginForm("Add", "Follow", null, new AjaxOptions { OnSuccess = "addFollowSuccess" }, new { id = "addFollowForm", @class = ViewBag.followed ? "hidden" : "" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="distributor" value="@ViewBag.UserId" />
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>立即关注</button>
+                }
+                @using (Ajax.BeginForm("Delete", "Follow", null, new AjaxOptions { OnSuccess = "deleteFollowSuccess" }, new { id = "deleteFollowForm", @class = ViewBag.followed ? "" : "hidden" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="distributor" value="@ViewBag.UserId" />
+                    <label class="btn btn-default"><i class="fa fa-check"></i>已关注</label>
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i>取消关注</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
