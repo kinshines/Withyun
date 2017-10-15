@@ -1,5 +1,5 @@
 # Withyun
-## a website for publish and collect resources
+## a UGC for publish and collect resources
 ### Features
 - resources crawler
 - resources search
