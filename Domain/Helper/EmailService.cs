@@ -44,7 +44,7 @@ namespace Domain.Helper
                 {
                     Host = "smtp.mxhichina.com",
                     UseDefaultCredentials = true,
-                    Credentials = new NetworkCredential("noreply@withyun.com", "WYmail2016"),
+                    Credentials = new NetworkCredential("noreply@withyun.com", "password"),
                     DeliveryMethod = SmtpDeliveryMethod.Network
                 };
                 smtp.Send(mail);
