@@ -10,10 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
     <PackageReference Include="microsoft.entityframeworkcore.relational" Version="2.1.1" />
     <PackageReference Include="microsoft.extensions.hosting.abstractions" Version="2.1.1" />
     <PackageReference Include="System.Drawing.COmmon" Version="4.5.0" />
     <PackageReference Include="X.pagedlist" Version="7.5.0" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="1.8.5" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
 using Withyun.Infrastructure.Data;
 using Withyun.Infrastructure.Utility;
 

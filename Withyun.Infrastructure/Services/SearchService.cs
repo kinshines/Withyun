@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Web;
-using Domain.Helper;
-using Domain.Models;
-using Microsoft.Practices.ServiceLocation;
-using NLogUtility;
 using SolrNet;
 using SolrNet.Commands.Parameters;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Utility;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
     public class SearchService
     {
-        public static void AddBlog(Blog blog)
+        readonly ISolrOperations<Blog> solr;
+        public SearchService(ISolrOperations<Blog> solrOperations)
+        {
+            solr = solrOperations;
+        }
+        public void AddBlog(Blog blog)
         {
             try
             {
                 if(blog.Status!=BlogStatus.Publish)
                     return;
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Blog>>();
                 solr.Add(blog);
                 solr.Commit();
             }
@@ -29,11 +30,10 @@ namespace Domain.Services
                 Logger.Error(ex, "AddBlog,blogId:{0}", blog.Id);
             }
         }
-        public static void DeleteBlog(Blog blog)
+        public void DeleteBlog(Blog blog)
         {
             try
             {
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Blog>>();
                 solr.Delete(blog);
                 solr.Commit();
             }
@@ -43,11 +43,10 @@ namespace Domain.Services
             }
         }
 
-        public static void DeleteById(int blogId)
+        public void DeleteById(int blogId)
         {
             try
             {
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Blog>>();
                 solr.Delete(new string[] { blogId.ToString() });
                 solr.Commit();
             }
@@ -57,11 +56,10 @@ namespace Domain.Services
             }
         }
 
-        public static SolrQueryResults<Blog> Query(string keyword, int? page,out int pageCount)
+        public SolrQueryResults<Blog> Query(string keyword, int? page,out int pageCount)
         {
             int pageNumber = (page ?? 1);
             int pageSize = 20;
-            var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Blog>>();
             AbstractSolrQuery query = new SolrQueryByField("titlecontent", keyword);
             QueryOptions options = new QueryOptions
             {
@@ -92,12 +90,6 @@ namespace Domain.Services
             }
             pageCount = (int)Math.Ceiling((float)result.NumFound / pageSize);
             return result;
-        }
-
-        public static void InitContainer()
-        {
-            string solrUrl = ConfigurationManager.AppSettings["SolrUrl"];
-            SolrNet.Startup.Init<Blog>(solrUrl);
         }
     }
 }

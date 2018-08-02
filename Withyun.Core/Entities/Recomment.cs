@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Withyun.Core.Enums;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     public class Recomment
     {

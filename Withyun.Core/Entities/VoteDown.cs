@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     /// <summary>
     /// 投票-反对

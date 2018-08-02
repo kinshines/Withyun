@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Domain.DAL;
-using Domain.Models;
+using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Data;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class VoteUpService:IDisposable
+    public class VoteUpService
     {
-        readonly BlogContext _context=new BlogContext();
+        readonly BlogContext _context;
+        public VoteUpService(BlogContext context)
+        {
+            _context = context;
+        }
 
         public VoteUp FindByBlogIdAndUserId(int blogId, int userId)
         {
-            return _context.VoteUps.FirstOrDefault(x => x.BlogId == blogId && x.UserId == userId);
+            return _context.VoteUp.FirstOrDefault(x => x.BlogId == blogId && x.UserId == userId);
         }
 
         public OperationResult<string> AddOrDelete(int blogId, string blogTitle, int userId, string userName, int distributor)
@@ -27,7 +32,7 @@ namespace Domain.Services
                     UserId = userId,
                     TimeStamp = DateTime.Now
                 };
-                _context.VoteUps.Add(vote);
+                _context.VoteUp.Add(vote);
                 var notice = new Notification()
                 {
                     UserId = distributor,
@@ -38,13 +43,13 @@ namespace Domain.Services
                     SourceName = userName,
                     TimeStamp = DateTime.Now
                 };
-                _context.Notifications.Add(notice);
+                _context.Notification.Add(notice);
                 _context.SaveChanges();
                 return new OperationResult<string>(true,"add");
             }
             else
             {
-                _context.VoteUps.Remove(vote);
+                _context.VoteUp.Remove(vote);
                 _context.SaveChanges();
                 return new OperationResult<string>(true, "cancel");
             }
@@ -52,12 +57,7 @@ namespace Domain.Services
 
         public int CountByBlogIdAndUserId(int blogId, int userId)
         {
-            return _context.VoteUps.Count(x => x.BlogId == blogId && x.UserId == userId);
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
+            return _context.VoteUp.Count(x => x.BlogId == blogId && x.UserId == userId);
         }
     }
 }

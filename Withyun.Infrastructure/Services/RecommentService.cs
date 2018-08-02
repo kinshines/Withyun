@@ -3,24 +3,29 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Linq.Dynamic;
-using System.Web;
-using Domain.DAL;
-using Domain.Helper;
-using Domain.Models;
-using EntityFramework.Extensions;
-using NLogUtility;
-using PagedList;
-using UploadImage;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Data;
+using Withyun.Infrastructure.Utility;
+using X.PagedList;
+using Z.EntityFramework.Plus;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
     public class RecommentService:IDisposable
     {
-        readonly BlogContext _context=new BlogContext();
+        readonly BlogContext _context;
+        readonly IHostingEnvironment _env;
+        public RecommentService(BlogContext context,IHostingEnvironment env)
+        {
+            _context = context;
+            _env = env;
+        }
         public IPagedList<Recomment> GetPagedList(RecommentCategory category,string recommentTitle, int pageNumber, int pageSize = 20)
         {
-            var query = _context.Recomments.Where(r => r.Category == category);
+            var query = _context.Recomment.Where(r => r.Category == category);
             if (!string.IsNullOrWhiteSpace(recommentTitle))
             {
                 query = query.Where(c => c.Title.Contains(recommentTitle));
@@ -30,21 +35,21 @@ namespace Domain.Services
         }
         public IPagedList<Recomment> GetPagedList(RecommentCategory category, int pageNumber, int pageSize = 36)
         {
-            var query = _context.Recomments.Where(r => r.Category == category);
+            var query = _context.Recomment.Where(r => r.Category == category);
             query = query.OrderByDescending(r => r.Top).ThenByDescending(r => r.TimeStamp);
             return query.ToPagedList(pageNumber, pageSize);
         }
 
-        public void SaveRecomment(HttpPostedFileBase file, string title,int blogId, int[] selectedCategory)
+        public void SaveRecomment(IFormFile file, string title,int blogId, int[] selectedCategory)
         {
             string fileName="";
             string yunUrl = "";
-            if (file.ContentLength > 0)
+            if (file.Length > 0)
             {
                 fileName = DateTime.Now.ToString("yy/MM/dd/") + Guid.NewGuid().ToString("N") +
                            Path.GetExtension(file.FileName);
-                string diskPath = HttpContext.Current.Server.MapPath("~" + ConstValues.CoverImageDirectory + fileName);
-                var image = ImgHandler.ZoomPicture(Image.FromStream(file.InputStream), 200, 110);
+                string diskPath = _env.ContentRootFileProvider.GetFileInfo(ConstValues.CoverImageDirectory + fileName).PhysicalPath;
+                var image = ImgHandler.ZoomPicture(Image.FromStream(file.OpenReadStream()), 200, 110);
                 string diskDir = diskPath.Substring(0, diskPath.LastIndexOf("\\", StringComparison.Ordinal));
                 if (!Directory.Exists(diskDir))
                 {
@@ -67,14 +72,14 @@ namespace Domain.Services
                     ImageStatus = string.IsNullOrEmpty(yunUrl) ? ImageStatus.Local : ImageStatus.Yun
                 };
 
-                _context.Recomments.Add(recomment);
+                _context.Recomment.Add(recomment);
             }
             _context.SaveChanges();
         }
 
         public Recomment Add(Recomment recomment)
         {
-            _context.Recomments.Add(recomment);
+            _context.Recomment.Add(recomment);
             _context.SaveChanges();
             return recomment;
         }
@@ -82,7 +87,7 @@ namespace Domain.Services
         public List<Recomment> GetRecommentsByCategory(RecommentCategory category,int top=18)
         {
             return
-                _context.Recomments.Where(r => r.Category == category)
+                _context.Recomment.Where(r => r.Category == category)
                     .OrderByDescending(r=>r.Top)
                     .ThenByDescending(r => r.TimeStamp)
                     .Take(top)
@@ -91,31 +96,31 @@ namespace Domain.Services
 
         public List<Recomment> GetLocalList()
         {
-            return _context.Recomments.Where(i => i.ImageStatus == ImageStatus.Local).ToList();
+            return _context.Recomment.Where(i => i.ImageStatus == ImageStatus.Local).ToList();
         }
 
         public bool Update(Recomment recomment)
         {
-            _context.Recomments.Attach(recomment);
+            _context.Recomment.Attach(recomment);
             return _context.SaveChanges() > 0;
         }
 
         public bool Top(int id)
         {
-            return _context.Recomments.Where(r => r.Id == id).Update(r => new Recomment() {Top = true,TimeStamp = DateTime.Now}) > 0;
+            return _context.Recomment.Where(r => r.Id == id).Update(r => new Recomment() {Top = true,TimeStamp = DateTime.Now}) > 0;
         }
 
         public bool UnTop(int id)
         {
-            return _context.Recomments.Where(r => r.Id == id).Update(r => new Recomment() { Top = false }) > 0;
+            return _context.Recomment.Where(r => r.Id == id).Update(r => new Recomment() { Top = false }) > 0;
         }
 
         public bool Delete(int id)
         {
-            var recomment = _context.Recomments.Find(id);
+            var recomment = _context.Recomment.Find(id);
             if (recomment == null)
                 return true;
-            string diskPath = HttpContext.Current.Server.MapPath("~" + ConstValues.CoverImageDirectory + recomment.CoverName);
+            string diskPath = _env.ContentRootFileProvider.GetFileInfo(ConstValues.CoverImageDirectory + recomment.CoverName).PhysicalPath;
             try
             {
                 File.Delete(diskPath);
@@ -124,7 +129,7 @@ namespace Domain.Services
             {
                 Logger.Error(ex,"file delete error,filepath:"+diskPath);
             }
-            _context.Recomments.Remove(recomment);
+            _context.Recomment.Remove(recomment);
             return _context.SaveChanges() > 0;
         }
 

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Withyun.Core.Enums;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     public class ImageUrl
     {

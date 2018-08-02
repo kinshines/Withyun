@@ -3,32 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.DAL;
-using Domain.Models;
+using Withyun.Core.Entities;
+using Withyun.Infrastructure.Data;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class LinkService:IDisposable
+    public class LinkService
     {
-        readonly BlogContext _context = new BlogContext();
+        readonly BlogContext _context;
+
+        public LinkService(BlogContext context)
+        {
+            _context = context;
+        }
 
         public void AddLinkList(int blogId, List<Link> linkList)
         {
-            List<Link> databaseLinks = _context.Links.Where(l => l.BlogId == blogId).ToList();
+            List<Link> databaseLinks = _context.Link.Where(l => l.BlogId == blogId).ToList();
             foreach (var link in linkList)
             {
                 if (databaseLinks.Count(l => l.Url == link.Url) == 0)
                 {
                     link.BlogId = blogId;
                     link.TimeStamp = DateTime.Now;
-                    _context.Links.Add(link);
+                    _context.Link.Add(link);
                 }
             }
             _context.SaveChanges();
-        }
-        public void Dispose()
-        {
-            _context.Dispose();
         }
     }
 }

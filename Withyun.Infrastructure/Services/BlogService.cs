@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
-using System.Web;
-using PagedList;
 using System.IO;
-using Domain.DAL;
-using Domain.Helper;
-using Domain.Models;
-using Domain.ViewModels;
-using UploadImage;
 using Withyun.Infrastructure.Data;
 using X.PagedList;
 using Withyun.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Withyun.Core.Dtos;
+using Withyun.Infrastructure.Utility;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Withyun.Core.Entities;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
     public class BlogService
     {
         readonly BlogContext _context;
+        readonly IHostingEnvironment _env;
+        readonly SearchService _searchService;
 
-        public BlogService(BlogContext context)
+        public BlogService(BlogContext context,IHostingEnvironment env,SearchService searchService)
         {
+            _env = env;
             _context = context;
+            _searchService = searchService;
         }
 
         public IPagedList<Blog> GetPagedList(int pageNumber,int pageSize)
@@ -72,7 +72,7 @@ namespace Domain.Services
         {
             _context.Blog.Add(blog);
             _context.SaveChanges();
-            SearchService.AddBlog(blog);
+            _searchService.AddBlog(blog);
             return blog;
         }
 
@@ -80,7 +80,7 @@ namespace Domain.Services
         {
             FixBlogLink(blog, links, linkIds, linkDescriptions);
             _context.SaveChanges();
-            SearchService.AddBlog(blog);
+            _searchService.AddBlog(blog);
             return blog;
         }
 
@@ -151,23 +151,26 @@ namespace Domain.Services
             if(blog==null)
                 return;
             blog.Status=BlogStatus.Delete;
-            SearchService.DeleteById(blog.Id);
+            _searchService.DeleteById(blog.Id);
             _context.SaveChanges();
         }
 
-        public OperationResult<ImageUrl> UploadImage(HttpPostedFileBase file,int blogId)
+        public OperationResult<ImageUrl> UploadImage(IFormFile file,int blogId)
         {
-            if (file.ContentLength > 0)
+            if (file.Length > 0)
             {
                 string fileName = DateTime.Now.ToString("yy/MM/dd/") + Guid.NewGuid().ToString("N") +
                                   Path.GetExtension(file.FileName);
-                string diskPath = HttpContext.Current.Server.MapPath("~" + ConstValues.BlogImageDirectory + fileName);
+                string diskPath = _env.ContentRootFileProvider.GetFileInfo(ConstValues.BlogImageDirectory + fileName).PhysicalPath;
                 string diskDir = diskPath.Substring(0, diskPath.LastIndexOf("\\", StringComparison.Ordinal));
                 if (!Directory.Exists(diskDir))
                 {
                     Directory.CreateDirectory(diskDir);
                 }
-                file.SaveAs(diskPath);
+                using (var stream = new FileStream(diskPath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
                 string yunUrl = UploadUtility.UploadLocalFile(diskPath);
                 var imageUrl = new ImageUrl()
                 {
@@ -201,16 +204,16 @@ namespace Domain.Services
             return new OperationResult<PanelStatus>(true, status);
         }
 
-        public void SaveRecomment(HttpPostedFileBase file, string title, int blogId, int[] selectedCategory)
+        public void SaveRecomment(IFormFile file, string title, int blogId, int[] selectedCategory)
         {
             string fileName = "";
             string yunUrl = "";
-            if (file.ContentLength > 0)
+            if (file.Length > 0)
             {
                 fileName = DateTime.Now.ToString("yy/MM/dd/") + Guid.NewGuid().ToString("N") +
                            Path.GetExtension(file.FileName);
-                string diskPath = HttpContext.Current.Server.MapPath("~" + ConstValues.CoverImageDirectory + fileName);
-                var image = ImgHandler.ZoomPicture(Image.FromStream(file.InputStream), 200, 110);
+                string diskPath = _env.ContentRootFileProvider.GetFileInfo(ConstValues.CoverImageDirectory + fileName).PhysicalPath;
+                var image = ImgHandler.ZoomPicture(Image.FromStream(file.OpenReadStream()), 200, 110);
                 string diskDir = diskPath.Substring(0, diskPath.LastIndexOf("\\", StringComparison.Ordinal));
                 if (!Directory.Exists(diskDir))
                 {

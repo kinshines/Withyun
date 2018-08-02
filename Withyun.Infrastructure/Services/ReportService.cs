@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using Domain.DAL;
-using Domain.Models;
-using EntityFramework.Extensions;
-using PagedList;
+using Microsoft.EntityFrameworkCore;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Data;
+using X.PagedList;
+using Z.EntityFramework.Plus;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class ReportService:IDisposable
+    public class ReportService
     {
-        readonly BlogContext _context=new BlogContext();
-        public void Dispose()
+        readonly BlogContext _context;
+        public ReportService(BlogContext context)
         {
-            _context.Dispose();
+            _context = context;
         }
 
         public void Add(Report report)
         {
-            _context.Reports.Add(report);
+            _context.Report.Add(report);
             _context.SaveChanges();
         }
 
         public IPagedList<Report> GetPagedList(int pageNumber, int pageSize = 20)
         {
-            var query = _context.Reports.Include(r => r.Blog).OrderByDescending(r => r.TimeStamp);
+            var query = _context.Report.Include(r => r.Blog).OrderByDescending(r => r.TimeStamp);
             return query.ToPagedList(pageNumber, pageSize);
         }
 
         public Report GetReport(int id)
         {
-            return _context.Reports.Include(r => r.Blog).SingleOrDefault(r => r.Id == id);
+            return _context.Report.Include(r => r.Blog).SingleOrDefault(r => r.Id == id);
         }
 
         public int ConfirmReport(int id)
@@ -39,8 +40,8 @@ namespace Domain.Services
             var report = GetReport(id);
             int blogId = report.BlogId;
             var blog = report.Blog;
-            _context.Reports.Where(r => r.BlogId == blogId).Delete();
-            _context.Blogs.Where(b => b.Id == blogId).Update(b => new Blog { Status = BlogStatus.Report });
+            _context.Report.Where(r => r.BlogId == blogId).Delete();
+            _context.Blog.Where(b => b.Id == blogId).Update(b => new Blog { Status = BlogStatus.Report });
             var notice = new Notification()
             {
                 BlogId = blogId,
@@ -66,7 +67,7 @@ namespace Domain.Services
                     notice.NotificationType=NotificationType.违反法律法规的内容;
                     break;
             }
-            _context.Notifications.Add(notice);
+            _context.Notification.Add(notice);
             SearchService.DeleteById(blogId);
             return _context.SaveChanges();
         }

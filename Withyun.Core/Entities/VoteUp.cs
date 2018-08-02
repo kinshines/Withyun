@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     /// <summary>
     /// 投票-赞

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     /// <summary>
     /// 链接

@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Web;
-using System.Web.Mvc;
-using Domain.DAL;
-using Domain.Models;
-using PagedList;
+using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Data;
+using X.PagedList;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class FollowService:IDisposable
+    public class FollowService
     {
-        readonly BlogContext _context=new BlogContext();
+        readonly BlogContext _context;
 
         public IPagedList<Blog> GetBlogPagedList(int userId, string blogTitle, int pageNumber, int pageSize = 20)
         {
-            var distributors = _context.Follows.Where(f => f.UserId == userId).Select(f => f.DistributorId);
-            var query = from b in _context.Blogs
+            var distributors = _context.Follow.Where(f => f.UserId == userId).Select(f => f.DistributorId);
+            var query = from b in _context.Blog
                 where distributors.Contains(b.UserId)
                 select b;
             if (!string.IsNullOrWhiteSpace(blogTitle))
@@ -35,7 +35,7 @@ namespace Domain.Services
             {
                 return new OperationResult<string>(true, "已关注");
             }
-            var distributor = _context.Users.Find(distributorId);
+            var distributor = _context.User.Find(distributorId);
             var follow = new Follow()
             {
                 DistributorId = distributorId,
@@ -43,7 +43,7 @@ namespace Domain.Services
                 UserId = userId,
                 TimeStamp = DateTime.Now
             };
-            _context.Follows.Add(follow);
+            _context.Follow.Add(follow);
             var notice = new Notification()
             {
                 NotificationType = NotificationType.Follow,
@@ -52,19 +52,19 @@ namespace Domain.Services
                 SourceId = userId,
                 SourceName = userName
             };
-            _context.Notifications.Add(notice);
+            _context.Notification.Add(notice);
             _context.SaveChanges();
             return new OperationResult<string>(true);
         }
 
         public OperationResult<string> Delete(int distributorId, int userId)
         {
-            var follow = _context.Follows.SingleOrDefault(f => f.DistributorId == distributorId && f.UserId == userId);
+            var follow = _context.Follow.SingleOrDefault(f => f.DistributorId == distributorId && f.UserId == userId);
             if (follow == null)
             {
                 return new OperationResult<string>(false,"未关注");
             }
-            _context.Follows.Remove(follow);
+            _context.Follow.Remove(follow);
             _context.SaveChanges();
             return new OperationResult<string>(true);
         } 
@@ -76,18 +76,14 @@ namespace Domain.Services
 
         public string GetDistributorName(int distributorId)
         {
-            var distributor = _context.Users.Find(distributorId);
+            var distributor = _context.User.Find(distributorId);
             return distributor.UserName;
         }
 
         private int Count(int distributorId, int userId)
         {
-            return _context.Follows.Count(f => f.DistributorId == distributorId && f.UserId == userId);
+            return _context.Follow.Count(f => f.DistributorId == distributorId && f.UserId == userId);
         }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
     }
 }

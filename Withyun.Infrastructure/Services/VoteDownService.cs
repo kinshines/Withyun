@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Domain.DAL;
-using Domain.Models;
+using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
+using Withyun.Infrastructure.Data;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class VoteDownService:IDisposable
+    public class VoteDownService
     {
-        readonly BlogContext _context=new BlogContext();
-        public void Dispose()
+        readonly BlogContext _context;
+        public VoteDownService(BlogContext context)
         {
-            _context.Dispose();
+            _context = context;
         }
+
         public VoteDown FindByBlogIdAndUserId(int blogId, int userId)
         {
-            return _context.VoteDowns.FirstOrDefault(x => x.BlogId == blogId && x.UserId == userId);
+            return _context.VoteDown.FirstOrDefault(x => x.BlogId == blogId && x.UserId == userId);
         }
 
         public OperationResult<string> AddOrDelete(int blogId, int userId)
@@ -30,13 +31,13 @@ namespace Domain.Services
                     UserId = userId,
                     TimeStamp = DateTime.Now
                 };
-                _context.VoteDowns.Add(vote);
+                _context.VoteDown.Add(vote);
                 _context.SaveChanges();
                 return new OperationResult<string>(true, "add");
             }
             else
             {
-                _context.VoteDowns.Remove(vote);
+                _context.VoteDown.Remove(vote);
                 _context.SaveChanges();
                 return new OperationResult<string>(true, "cancel");
             }
@@ -44,7 +45,7 @@ namespace Domain.Services
 
         public int CountByBlogIdAndUserId(int blogId, int userId)
         {
-            return _context.VoteDowns.Count(x => x.BlogId == blogId && x.UserId == userId);
+            return _context.VoteDown.Count(x => x.BlogId == blogId && x.UserId == userId);
         }
     }
 }

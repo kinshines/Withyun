@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     /// <summary>
     /// 链接无效

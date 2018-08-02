@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     public class User
     {

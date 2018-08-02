@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Withyun.Infrastructure.Utility;
 
 namespace Withyun.Infrastructure.Services
 {
@@ -47,7 +48,7 @@ namespace Withyun.Infrastructure.Services
                 {
                     Host = "smtp.mxhichina.com",
                     UseDefaultCredentials = true,
-                    Credentials = new NetworkCredential("noreply@withyun.com", "WYmail2016"),
+                    Credentials = new NetworkCredential("noreply@withyun.com", "password"),
                     DeliveryMethod = SmtpDeliveryMethod.Network
                 };
                 smtp.Send(mail);

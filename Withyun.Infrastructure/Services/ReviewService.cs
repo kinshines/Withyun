@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Domain.DAL;
-using Domain.Models;
+using Withyun.Core.Entities;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Data;
 
-namespace Domain.Services
+namespace Withyun.Infrastructure.Services
 {
-    public class ReviewService:IDisposable
+    public class ReviewService
     {
-        readonly BlogContext _context=new BlogContext();
-        public void Dispose()
+        readonly BlogContext _context;
+        public ReviewService(BlogContext context)
         {
-            _context.Dispose();
+            _context = context;
         }
 
         public void Add(Review review)
@@ -23,7 +23,7 @@ namespace Domain.Services
             }
             review.TimeStamp = DateTime.Now;
 
-            _context.Reviews.Add(review);
+            _context.Review.Add(review);
 
             var notice = new Notification()
             {
@@ -35,14 +35,14 @@ namespace Domain.Services
                 UserId = review.Distributor,
                 TimeStamp = DateTime.Now
             };
-            _context.Notifications.Add(notice);
+            _context.Notification.Add(notice);
             _context.SaveChanges();
         }
 
         public int CountByTime(Review review, DateTime lastTime)
         {
             return
-                _context.Reviews.Count(
+                _context.Review.Count(
                     r => r.BlogId == review.BlogId && r.UserId == review.UserId && r.TimeStamp > lastTime);
         }
     }

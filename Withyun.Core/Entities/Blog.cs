@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using SolrNet.Attributes;
 using Withyun.Core.Enums;
 
-namespace Domain.Models
+namespace Withyun.Core.Entities
 {
     /// <summary>
     /// 博客
