@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
 using Withyun.Core.Enums;
 using Withyun.Infrastructure.Data;
 using X.PagedList;
@@ -14,9 +13,11 @@ namespace Withyun.Infrastructure.Services
     public class LinkInvalidService
     {
         readonly BlogContext _context;
-        public LinkInvalidService(BlogContext context)
+        readonly SearchService _searchService;
+        public LinkInvalidService(BlogContext context,SearchService searchService)
         {
             _context = context;
+            _searchService = searchService;
         }
         public void Dispose()
         {
@@ -103,7 +104,7 @@ namespace Withyun.Infrastructure.Services
                 UserId = blog.UserId
             };
             _context.Notification.Add(notice);
-            SearchService.DeleteById(blogId);
+            _searchService.DeleteById(blogId);
             return _context.SaveChanges();
         }
     }

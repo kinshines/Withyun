@@ -13,9 +13,11 @@ namespace Withyun.Infrastructure.Services
     public class ReportService
     {
         readonly BlogContext _context;
-        public ReportService(BlogContext context)
+        readonly SearchService _searchService;
+        public ReportService(BlogContext context,SearchService searchService)
         {
             _context = context;
+            _searchService = searchService;
         }
 
         public void Add(Report report)
@@ -68,7 +70,7 @@ namespace Withyun.Infrastructure.Services
                     break;
             }
             _context.Notification.Add(notice);
-            SearchService.DeleteById(blogId);
+            _searchService.DeleteById(blogId);
             return _context.SaveChanges();
         }
     }

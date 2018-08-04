@@ -13,6 +13,10 @@ namespace Withyun.Infrastructure.Services
     public class FollowService
     {
         readonly BlogContext _context;
+        public FollowService(BlogContext context)
+        {
+            _context = context;
+        }
 
         public IPagedList<Blog> GetBlogPagedList(int userId, string blogTitle, int pageNumber, int pageSize = 20)
         {

@@ -20,12 +20,14 @@ namespace Withyun.Infrastructure.Services
         readonly BlogContext _context;
         readonly IHostingEnvironment _env;
         readonly SearchService _searchService;
+        readonly UploadImageUtility _uploadUtility;
 
-        public BlogService(BlogContext context,IHostingEnvironment env,SearchService searchService)
+        public BlogService(BlogContext context,IHostingEnvironment env,SearchService searchService, UploadImageUtility uploadImageUtility)
         {
             _env = env;
             _context = context;
             _searchService = searchService;
+            _uploadUtility = uploadImageUtility;
         }
 
         public IPagedList<Blog> GetPagedList(int pageNumber,int pageSize)
@@ -171,7 +173,7 @@ namespace Withyun.Infrastructure.Services
                 {
                     file.CopyTo(stream);
                 }
-                string yunUrl = UploadUtility.UploadLocalFile(diskPath);
+                string yunUrl = _uploadUtility.UploadLocalFile(diskPath);
                 var imageUrl = new ImageUrl()
                 {
                     BlogId = blogId,
@@ -221,7 +223,7 @@ namespace Withyun.Infrastructure.Services
                 }
                 image.Save(diskPath);
                 image.Dispose();
-                yunUrl = UploadUtility.UploadLocalFile(diskPath);
+                yunUrl = _uploadUtility.UploadLocalFile(diskPath);
             }
             foreach (int category in selectedCategory)
             {

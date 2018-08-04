@@ -7,7 +7,7 @@ namespace Withyun.Infrastructure.Utility
 {
     public class Logger 
     {
-        public static readonly ILogger<Logger> logger;
+        public static ILogger<Logger> logger;
 
         public static void Info(string module, string message, params object[] args)
         {

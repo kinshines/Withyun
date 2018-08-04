@@ -9,4 +9,10 @@
     <PackageReference Include="SolrNet.Microsoft.DependencyInjection" Version="1.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UploadImage\UploadImage.csproj" />
+    <ProjectReference Include="..\Withyun.Core\Withyun.Core.csproj" />
+    <ProjectReference Include="..\Withyun.Infrastructure\Withyun.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -18,10 +18,12 @@ namespace Withyun.Infrastructure.Services
     {
         readonly BlogContext _context;
         readonly IHostingEnvironment _env;
-        public RecommentService(BlogContext context,IHostingEnvironment env)
+        readonly UploadImageUtility _uploadUtility;
+        public RecommentService(BlogContext context,IHostingEnvironment env,UploadImageUtility uploadImageUtility)
         {
             _context = context;
             _env = env;
+            _uploadUtility = uploadImageUtility;
         }
         public IPagedList<Recomment> GetPagedList(RecommentCategory category,string recommentTitle, int pageNumber, int pageSize = 20)
         {
@@ -57,7 +59,7 @@ namespace Withyun.Infrastructure.Services
                 }
                 image.Save(diskPath);
                 image.Dispose();
-                yunUrl = UploadUtility.UploadLocalFile(diskPath);
+                yunUrl = _uploadUtility.UploadLocalFile(diskPath);
             }
             foreach (int category in selectedCategory)
             {
