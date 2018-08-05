@@ -1,43 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Dtos;
+using Withyun.Infrastructure.Utility;
 using Withyun.Web.Models;
 
-namespace Withyun.Web.Controllers
+namespace Withyun.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        [ResponseCache(Duration = 1*60*60, Location = ResponseCacheLocation.Any)]
+        public ActionResult Index()
         {
             return View();
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
+        public ActionResult About()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Message(MessageViewModel model)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!string.IsNullOrWhiteSpace(model.Message))
+            {
+                Logger.Email("Message:{0},Contacts:{1}", model.Message, model.Contacts);
+            }
+            return Json(new OperationResult(true));
         }
     }
 }

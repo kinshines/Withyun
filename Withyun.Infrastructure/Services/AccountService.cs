@@ -54,7 +54,7 @@ namespace Withyun.Infrastructure.Services
             return user;
         }
 
-        public ClaimsIdentity CreateIdentity(User user, string authenticationType)
+        public ClaimsIdentity CreateIdentity(User user)
         {
             ClaimsIdentity identity = new ClaimsIdentity(ApplicationCookie);
             identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
@@ -66,6 +66,11 @@ namespace Withyun.Infrastructure.Services
                 identity.AddClaim(new Claim(ClaimTypes.Role, "admin"));
             }
             return identity;
+        }
+
+        public ClaimsPrincipal CreatePrincipal(ClaimsIdentity identity)
+        {
+            return new ClaimsPrincipal(identity);
         }
 
         public OperationResult<string> GenerateCode(int userId, string newEmail)
