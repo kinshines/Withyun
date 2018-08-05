@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Withyun.Infrastructure\Withyun.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\blog\" />
+    <Folder Include="wwwroot\images\cover\" />
+  </ItemGroup>
+
 </Project>
