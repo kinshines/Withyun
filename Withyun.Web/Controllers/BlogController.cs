@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Claims;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Withyun.Core.Dtos;
 using Withyun.Core.Entities;
@@ -15,10 +18,12 @@ namespace Withyun.Controllers
     {
         readonly BlogService _blogService;
         readonly SearchService _searchService;
-        public BlogController(BlogService blogService,SearchService searchService)
+        readonly HtmlSanitizer _sanitizer;
+        public BlogController(BlogService blogService,SearchService searchService,HtmlSanitizer sanitizer)
         {
             _blogService = blogService;
             _searchService = searchService;
+            _sanitizer = sanitizer;
         }
 
         // GET: /Blog/
@@ -58,11 +63,11 @@ namespace Withyun.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = User.Identity.GetUserId<int>();
+                var userId = GetUserId();
                 var blog = _blogService.Find(blogView.Id, userId);
                 blog.Title = blogView.Title;
                 blog.TimeStamp = DateTime.Now;
-                blog.HtmlContent = Sanitizer.GetSafeHtml(blogView.HtmlContent);
+                blog.HtmlContent = _sanitizer.Sanitize(blogView.HtmlContent);
                 blog.Content = blogView.Content;
                 if (blogView.Status == BlogStatus.Report||blogView.Status==BlogStatus.Verify)
                 {
@@ -82,8 +87,8 @@ namespace Withyun.Controllers
         // GET: /Blog/Edit/5
         public ActionResult Edit(int? id)
         {
-            var userId = User.Identity.GetUserId<int>();
-            var userName = User.Identity.GetUserName();
+            var userId = GetUserId();
+            var userName = User.Identity.Name;
             var blog=new Blog();
             if (id.HasValue)
             {
@@ -115,8 +120,8 @@ namespace Withyun.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult EditRecomment(int? id)
         {
-            var userId = User.Identity.GetUserId<int>();
-            var userName = User.Identity.GetUserName();
+            var userId = GetUserId();
+            var userName = User.Identity.Name;
             var blog = new Blog();
             if (id.HasValue)
             {
@@ -148,15 +153,15 @@ namespace Withyun.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public ActionResult EditRecomment(Blog blogView, string[] link, int[] linkId, string recommentTitle, int[] selectedCategory, string[] linkDescription)
+        public ActionResult EditRecomment(Blog blogView, string[] link, int[] linkId, string recommentTitle, int[] selectedCategory, string[] linkDescription, IFormFile fileField)
         {
             if (ModelState.IsValid)
             {
-                var userId = User.Identity.GetUserId<int>();
+                var userId = GetUserId();
                 var blog = _blogService.Find(blogView.Id, userId);
                 blog.Title = blogView.Title;
                 blog.TimeStamp = DateTime.Now;
-                blog.HtmlContent = Sanitizer.GetSafeHtml(blogView.HtmlContent);
+                blog.HtmlContent = _sanitizer.Sanitize(blogView.HtmlContent);
                 blog.Content = blogView.Content;
                 if (blogView.Status == BlogStatus.Report || blogView.Status == BlogStatus.Verify)
                 {
@@ -167,8 +172,7 @@ namespace Withyun.Controllers
                     blog.Status = BlogStatus.Publish;
                 }
                 blog = _blogService.Update(blog, link, linkId, linkDescription);
-                HttpPostedFileBase file = Request.Files["fileField"];
-                _blogService.SaveRecomment(file, recommentTitle, blog.Id, selectedCategory);
+                _blogService.SaveRecomment(fileField, recommentTitle, blog.Id, selectedCategory);
                 return RedirectToAction("PublishSuccess", new { id = blog.Id });
             }
             blogView.Links = new Collection<Link>();
@@ -178,7 +182,7 @@ namespace Withyun.Controllers
         // GET: /Blog/Delete/5
         public ActionResult Delete(int id)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             Blog blog = _blogService.Find(id, userId);
             if (blog == null)
             {
@@ -192,13 +196,13 @@ namespace Withyun.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             _blogService.Delete(id, userId);
             return RedirectToAction("Manage");
         }
 
         [HttpPost]
-        public ActionResult FileUpload(HttpPostedFileBase file,int blogId)
+        public ActionResult FileUpload(IFormFile file,int blogId)
         {
             return Json(_blogService.UploadImage(file,blogId));
         }
@@ -217,7 +221,7 @@ namespace Withyun.Controllers
         //我的分享
         public ActionResult Manage(string blogTitle, int? page)
         {
-            int userId = User.Identity.GetUserId<int>();
+            int userId = GetUserId();
             ViewBag.BlogTitle = blogTitle;
             int pageNumber = (page ?? 1);
             return View(_blogService.GetPagedList(BlogStatus.Publish, userId, blogTitle, pageNumber));
@@ -226,7 +230,7 @@ namespace Withyun.Controllers
         //内容违规
         public ActionResult Report(string blogTitle, int? page)
         {
-            int userId = User.Identity.GetUserId<int>();
+            int userId = GetUserId();
             ViewBag.BlogTitle = blogTitle;
 
             int pageNumber = (page ?? 1);
@@ -236,7 +240,7 @@ namespace Withyun.Controllers
         //待审核
         public ActionResult Verify(string blogTitle, int? page)
         {
-            int userId = User.Identity.GetUserId<int>();
+            int userId = GetUserId();
             ViewBag.BlogTitle = blogTitle;
 
             int pageNumber = (page ?? 1);
@@ -246,7 +250,7 @@ namespace Withyun.Controllers
         //链接无效
         public ActionResult Invalide(string blogTitle, int? page)
         {
-            int userId = User.Identity.GetUserId<int>();
+            int userId = GetUserId();
             ViewBag.BlogTitle = blogTitle;
 
             int pageNumber = (page ?? 1);
@@ -255,15 +259,20 @@ namespace Withyun.Controllers
 
         public ActionResult GetPanelStatus(int blogId)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             if (userId == 0)
             {
                 return Json(new OperationResult(false));
             }
             else
             {
-                return Json(_blogService.GetPanelStatus(userId, blogId),);
+                return Json(_blogService.GetPanelStatus(userId, blogId));
             }
+        }
+
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,6 +35,7 @@ namespace Withyun.Web
             services.AddSingleton<EmailService>();
             services.AddSingleton<SearchService>();
             services.AddSingleton<UploadImageUtility>();
+            services.AddSingleton<HtmlSanitizer>();
 
             services.AddScoped<AccountService>();
             services.AddScoped<BlogService>();
