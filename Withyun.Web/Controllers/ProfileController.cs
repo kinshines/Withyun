@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Services;
 
 namespace Withyun.Controllers
 {
     public class ProfileController : Controller
     {
-        readonly BlogService _blogService=new BlogService();
+        readonly BlogService _blogService;
+
+        public ProfileController(BlogService blogService)
+        {
+            _blogService = blogService;
+        }
         //
         // GET: /Profile/
         public ActionResult Index(int id,string blogTitle,int? page)
@@ -19,15 +23,6 @@ namespace Withyun.Controllers
             ViewBag.blogTitle = blogTitle;
             ViewBag.userId = id;
             return View(_blogService.GetPagedList(BlogStatus.Publish, id, blogTitle, pageNumber));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _blogService.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

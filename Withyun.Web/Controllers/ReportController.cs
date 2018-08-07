@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
-using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
+using Withyun.Infrastructure.Services;
 
 namespace Withyun.Controllers
 {
     [Authorize]
     public class ReportController : Controller
     {
-        private readonly ReportService _reportService=new ReportService();
-        protected override void Dispose(bool disposing)
+        private readonly ReportService _reportService;
+        public ReportController(ReportService reportService,)
         {
-            if (disposing)
-            {
-                _reportService.Dispose();
-            }
-            base.Dispose(disposing);
+            _reportService = reportService;
         }
 
         [HttpPost]
@@ -28,7 +26,7 @@ namespace Withyun.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = User.Identity.GetUserId<int>();
+                var userId = GetUserId();
                 if (userId == 0)
                 {
                     return Json(new OperationResult(false));
@@ -63,5 +61,10 @@ namespace Withyun.Controllers
             _reportService.ConfirmReport(id);
             return RedirectToAction("Index");
         }
-	}
+
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+    }
 }

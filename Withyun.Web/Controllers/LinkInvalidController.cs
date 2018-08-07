@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Services;
-using Domain.Models;
-using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Withyun.Infrastructure.Services;
+using Withyun.Core.Dtos;
+using System.Security.Claims;
 
 namespace Withyun.Controllers
 {
     [Authorize]
     public class LinkInvalidController : Controller
     {
-        readonly LinkInvalidService _invalidService=new LinkInvalidService();
-        protected override void Dispose(bool disposing)
+        readonly LinkInvalidService _invalidService;
+        public LinkInvalidController(LinkInvalidService invalidService)
         {
-            if (disposing)
-            {
-                _invalidService.Dispose();
-            }
-            base.Dispose(disposing);
+            _invalidService = invalidService;
         }
 
         //
         [HttpPost]
         public ActionResult Create(int linkId)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             if (userId == 0)
             {
                 return Json(new OperationResult(false));
@@ -36,9 +32,9 @@ namespace Withyun.Controllers
 
         public ActionResult Exist(int linkId)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             int count = _invalidService.CountByLinkIdAndUserId(linkId, userId);
-            return Json(count, JsonRequestBehavior.AllowGet);
+            return Json(count);
         }
 
         [Authorize(Roles = "admin")]
@@ -62,5 +58,10 @@ namespace Withyun.Controllers
             _invalidService.ConfirmInvalide(id);
             return RedirectToAction("Index");
         }
-	}
+
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+    }
 }

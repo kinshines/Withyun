@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
-using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Dtos;
+using Withyun.Infrastructure.Services;
 
 namespace Withyun.Controllers
 {
     [Authorize]
     public class CollectionController : Controller
     {
-        private readonly CollectionService _collectionService=new CollectionService();
-
+        private readonly CollectionService _collectionService;
+        public CollectionController(CollectionService collectionService)
+        {
+            _collectionService = collectionService;
+        }
         //
         [HttpPost]
         public ActionResult Create(int blogId,int distributor,string blogTitle )
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             if (userId == 0)
             {
                 return Json(new OperationResult(false));
@@ -30,14 +32,14 @@ namespace Withyun.Controllers
 
         public ActionResult Exist(int blogId)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             int count = _collectionService.CountByBlogIdAndUserId(blogId,userId);
-            return Json(count, JsonRequestBehavior.AllowGet);
+            return Json(count);
         }
 
         public ActionResult Index(string blogTitle,int? page)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             ViewBag.BlogTitle = blogTitle;
             int pageNumber = (page ?? 1);
             return View(_collectionService.GetPagedList(userId, blogTitle, pageNumber));
@@ -46,17 +48,13 @@ namespace Withyun.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             return Json(_collectionService.Delete(id, userId));
         }
 
-        protected override void Dispose(bool disposing)
+        private int GetUserId()
         {
-            if (disposing)
-            {
-                _collectionService.Dispose();
-            }
-            base.Dispose(disposing);
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
     }
 }

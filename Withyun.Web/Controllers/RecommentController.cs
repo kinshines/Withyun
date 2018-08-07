@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
-using NLogUtility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Enums;
+using Withyun.Infrastructure.Services;
+using Withyun.Infrastructure.Utility;
 
 namespace Withyun.Controllers
 {
     [Authorize(Roles = "admin")]
     public class RecommentController : Controller
     {
-        readonly RecommentService _recommentService=new RecommentService();
+        readonly RecommentService _recommentService;
+
+        public RecommentController(RecommentService recommentService)
+        {
+            _recommentService = recommentService;
+        }
         //
         // GET: /Recomment/
 
@@ -39,15 +45,14 @@ namespace Withyun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string title, int blogId, int[] selectedCategory)
+        public ActionResult Create(string title, int blogId, int[] selectedCategory, IFormFile fileField)
         {
             ViewBag.Message = "invalide";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    HttpPostedFileBase file = Request.Files["fileField"];
-                    _recommentService.SaveRecomment(file, title, blogId, selectedCategory);
+                    _recommentService.SaveRecomment(fileField, title, blogId, selectedCategory);
                     ViewBag.Message = "success";
                 }
                 catch (Exception ex)
@@ -59,7 +64,6 @@ namespace Withyun.Controllers
             return View();
         }
 
-        [ChildActionOnly]
         [AllowAnonymous]
         //[OutputCache(Duration = 1*60*60,VaryByParam = "id")]
         public ActionResult Recomment(RecommentCategory id)
@@ -68,15 +72,6 @@ namespace Withyun.Controllers
             ViewBag.Title = id.ToString();
             ViewBag.Icon = _recommentService.GetIconByCategory(id);
             return PartialView(list);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _recommentService.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         [HttpPost]
