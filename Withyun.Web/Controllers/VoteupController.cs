@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
-using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Dtos;
+using Withyun.Infrastructure.Services;
 
 namespace Withyun.Controllers
 {
@@ -13,34 +13,34 @@ namespace Withyun.Controllers
     public class VoteupController : Controller
     {
 
-        readonly VoteUpService _voteupService=new VoteUpService();
-
-        protected override void Dispose(bool disposing)
+        readonly VoteUpService _voteupService;
+        public VoteupController(VoteUpService voteUpService)
         {
-            if (disposing)
-            {
-                _voteupService.Dispose();
-            }
-            base.Dispose(disposing);
+            _voteupService = voteUpService;
         }
 
         [HttpPost]
         public ActionResult Create(int blogId,string blogTitle,int distributor)
         {
-            var userId=User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             if (userId == 0)
             {
                 return Json(new OperationResult(false));
             }
-            var userName = User.Identity.GetUserName();
+            var userName = User.Identity.Name;
             return Json(_voteupService.AddOrDelete(blogId, blogTitle,userId,userName,distributor));
         }
 
         public ActionResult Exist(int blogId)
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             int count = _voteupService.CountByBlogIdAndUserId(blogId, userId);
-            return Json(count, JsonRequestBehavior.AllowGet);
+            return Json(count);
         }
-	}
+
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+    }
 }

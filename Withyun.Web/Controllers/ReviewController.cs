@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Domain.Models;
-using Domain.Services;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Core.Dtos;
+using Withyun.Core.Entities;
+using Withyun.Infrastructure.Services;
 
 namespace Withyun.Controllers
 {
     [Authorize]
     public class ReviewController : Controller
     {
-        readonly ReviewService _reviewService=new ReviewService();
-
-        protected override void Dispose(bool disposing)
+        readonly ReviewService _reviewService;
+        public ReviewController(ReviewService reviewService)
         {
-            if (disposing)
-            {
-                _reviewService.Dispose();
-            }
-            base.Dispose(disposing);
+            _reviewService = reviewService;
         }
 
         [HttpPost]
@@ -31,7 +25,7 @@ namespace Withyun.Controllers
         {
             if (ModelState.IsValid)
             {
-                review.UserId = User.Identity.GetUserId<int>();
+                review.UserId = GetUserId();
                 if (review.UserId == 0)
                 {
                     return Json(new OperationResult<string>(false, "尚未登录"));
@@ -41,7 +35,7 @@ namespace Withyun.Controllers
                 {
                     return Json(new OperationResult<string>(false, "1小时内最多评论3次"));
                 }
-                review.UserName = User.Identity.GetUserName();
+                review.UserName = User.Identity.Name;
                 _reviewService.Add(review);
                 var formattedData = new
                 {
@@ -55,5 +49,10 @@ namespace Withyun.Controllers
             }
             return Json(new OperationResult<string>(false, "评论失败"));
         }
-	}
+
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+    }
 }
