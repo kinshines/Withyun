@@ -2,73 +2,64 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     <title>@ViewData["Title"] - Withyun.Web</title>
-
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
+    <link href="https://cdn.bootcss.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2/3.5.2/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/summernote/0.8.1/summernote.css" rel="stylesheet">
+    <link href="~/css/se7en-font.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <script src="~/js/modernizr.custom.js"></script>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Withyun.Web</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
+<body class="page-header-fixed">
+    <!-- Navigation -->
+    <div class="navbar navbar-fixed-top scroll-hide">
+        <div class="container-fluid top-bar">
+            <div id="top-inner" class="top-warp clearfix">
+                <partial name="_LoginPartial"/>
+                <a asp-controller="Home" asp-action="Index" class="logo">WithYun</a>
+                <form asp-controller="Blog" asp-action="Index" method="get" class="navbar-form form-inline col-md-6">
+                    <input class="form-control" placeholder="搜索" type="text" name="wd" value="@ViewBag.wd">
+                </form>
+                <div style="padding-top: 8px">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">首页</a>
+                    <a asp-controller="Blog" asp-action="Edit" class="btn btn-success">分享</a>
+                    <a asp-controller="Home" asp-action="About" class="btn btn-info">关于</a>
+                </div>
             </div>
         </div>
-    </nav>
-
-    <partial name="_CookieConsentPartial" />
-
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - Withyun.Web</p>
-        </footer>
     </div>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+    <!-- End Navigation -->
+    <div class="container-fluid main-content">
+        @RenderBody()
+    </div>
 
-    @RenderSection("Scripts", required: false)
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-ajax-unobtrusive/3.2.3/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+    <script src="~/js/messages_zh.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.bootcss.com/raphael/2.1.4/raphael-min.js"></script>
+    <script src="https://cdn.bootcss.com/selectivizr/1.0.2/selectivizr-min.js"></script>
+    <script src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script src="https://cdn.bootcss.com/typeahead.js/0.9.3/typeahead.min.js"></script>
+    <script src="https://cdn.bootcss.com/spin.js/2.0.1/spin.min.js"></script>
+    <script src="https://cdn.bootcss.com/fitvids/1.1.0/jquery.fitvids.min.js"></script>
+    <script src="https://cdn.bootcss.com/select2/3.5.2/select2.min.js"></script>
+    <script src="https://cdn.bootcss.com/summernote/0.8.1/summernote.min.js"></script>
+    <script src="https://cdn.bootcss.com/summernote/0.8.1/lang/summernote-zh-CN.min.js"></script>
+    <script src="https://cdn.bootcss.com/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/page.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>
