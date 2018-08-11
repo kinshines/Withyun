@@ -1,4 +1,4 @@
-﻿@model Withyun.ViewModels.LoginViewModel
+﻿@model Withyun.Web.ViewModels.LoginViewModel
 @{
     Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
     ViewBag.Title = "登录";
@@ -8,31 +8,28 @@
     <!-- Login Screen -->
 <div class="login-wrapper">
     <div class="login-container">
-        <a href="@Url.Action("Index","Home")">
+        <a asp-controller="Home" asp-action="Index">
             <img src="~/images/logo-login@2x.png" />
         </a>
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary("", new { @class = "text-danger" })
+        <form asp-action="Login" asp-controller="Account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "邮箱" })
-                @Html.ValidationMessageFor(model=>model.Email)
+                <input asp-for="Email" class = "form-control", placeholder = "邮箱" />
+                <span asp-validation-for="Email"></span>
             </div>
             <div class="form-group">
-                @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "密码" })
-                @Html.ValidationMessageFor(model => model.Password)
+                <input asp-for="Password" class="form-control" , placeholder="密码" />
+                <span asp-validation-for="Password"></span>
             </div>
             <div class="form-options clearfix">
-                @Html.ActionLink("忘记密码？", "ForgotPassword", null, new { @class="pull-right"})
+                <a asp-action="ForgotPassword" class="pull-right">忘记密码？</a>
             </div>
             <div class="social-login clearfix">
                 <button type="submit" class="btn btn-primary">登录</button>
             </div>
-        }
-        
+        </form>       
         <p class="signup">
-            还没有账户？ @Html.ActionLink("立即注册", "Register")
+           还没有账户？<a asp-action="Register">立即注册</a>
         </p>
     </div>
 </div>

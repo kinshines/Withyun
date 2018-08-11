@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
+    <PackageReference Include="microsoft.aspnetcore.razor" Version="2.1.1" />
     <PackageReference Include="microsoft.entityframeworkcore.relational" Version="2.1.1" />
     <PackageReference Include="microsoft.extensions.hosting.abstractions" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
