@@ -1,0 +1,39 @@
+﻿@model Withyun.ViewModels.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+    ViewBag.Title = "注册";
+    ViewBag.BodyClass = "login1 signup";
+}
+
+    <!-- Login Screen -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <a href="@Url.Action("Index","Home")">
+                <img src="~/images/logo-login@2x.png" />
+            </a>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Email, new { @class="form-control", placeholder="邮箱"})
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.UserName, new { @class="form-control", placeholder="昵称"})
+                </div>
+                <div class="form-group">
+                    @Html.PasswordFor(model => model.Password, new { @class="form-control",placeholder="密码"})
+                </div>
+                <div class="form-options">
+                </div>
+                <div class="social-login clearfix">
+                    <button type="submit" class="btn btn-primary">注册</button>
+                </div>
+            }
+            
+            <p class="signup">
+                已有账户？ @Html.ActionLink("立即登录","Login")
+            </p>
+        </div>
+    </div>
+    <!-- End Login Screen -->

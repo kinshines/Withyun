@@ -1,0 +1,35 @@
+﻿@using Domain.Models
+@model List<Recomment>
+@{
+    var category = (int) Enum.Parse(typeof (RecommentCategory), ViewBag.Title);
+}
+<div class="widget-container fluid-height">
+    <div class="heading">
+        <div class="yk-title">
+            <a href="@Url.Action("Index","Recomment",new{id=category})" target="_blank"><i class="fa @ViewBag.Icon"></i>@ViewBag.Title</a>
+        </div>
+    </div>
+    <div class="widget-content padded">
+        <div class="row">
+            @foreach (var recomment in Model)
+            {
+                <div class="col-md-2 col-sm-3 col-xs-6">
+                    <div class="v">
+                        <div class="v-thumb">
+                            <i class="bg"></i>
+                            <img class="lazy" data-original="@recomment.CoverUrl" alt="@recomment.Title"/>
+                        </div>
+                        <div class="v-link">
+                            <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank" title="@recomment.Title"></a>
+                        </div>
+                        <div class="v-meta vb">
+                            <div class="v-meta-title">
+                                <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank">@recomment.Title</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

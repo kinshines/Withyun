@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "怎样获得微信收款二维码";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h3>
+        @ViewBag.Title
+    </h3>
+</div>
+
+<div class="row">
+    <div class="col-sm-3">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="@Url.Action("ChangePassword", "Manage", null)">
+                    <p>
+                       修改密码
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("ChangeEmail", "Manage", null)">
+                    <p>
+                        修改邮箱
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("UploadAvatar", "Manage", null)">
+                    <p>
+                        头像设置
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("UploadAlipay", "Manage", null)">
+                    <p>
+                        支付宝收款二维码
+                    </p>
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="@Url.Action("UploadWechat", "Manage", null)">
+                    <p>
+                        微信收款二维码
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-sm-9">
+        <div class="widget-container fluid-height clearfix">
+            <div class="heading">
+                <h4>
+                    <i class="fa fa-reorder"></i>@ViewBag.Title
+                </h4>
+            </div>
+            <div class="widget-content padded">
+                <p><h4>1.首先打开手机微信，点击右上角的“+”号，选择“收付款”</h4></p>
+                <p>
+                    <img src="~/images/wechat/start_android.jpg" width="300" />
+                    <img src="~/images/wechat/start_iphone.png" width="300" />
+                </p>
+                <p><h4>2.选择“我要收款”</h4></p>
+                <p>
+                    <img src="~/images/wechat/receive_android.jpg" width="300" />
+                    <img src="~/images/wechat/receive_iphone.png" width="300" />
+                </p>
+                <p><h4>3.生成你的收款二维码</h4></p>
+                <p>
+                    <img src="~/images/wechat/qrcode_android.png" width="300" />
+                    <img src="~/images/wechat/qrcode_iphone.png" width="300"/>
+                </p>    
+                <p><h4>4.指尖长按住生成的二维码，会出现“二维码保存到手机”(Android)或保存图片“(iPhone)，将二维码保存到手机</h4></p>
+                <p>
+                    <img src="~/images/wechat/saveqr_android.png" width="300" />
+                    <img src="~/images/wechat/saveqr_iphone.png" width="300"/>
+                </p>
+                <p><h4>5.将保存的二维码上传至 @Html.ActionLink("Withyun", "UploadWechat", "Manage")</h4></p>
+            </div>
+        </div>
+    </div>
+</div>
+

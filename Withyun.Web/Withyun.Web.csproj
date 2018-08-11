@@ -26,6 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Home\About.cshtml" />
+    <None Include="Views\Home\Contact.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\Shared\_LayoutEmpty.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -1,0 +1,64 @@
+﻿@using PagedList.Mvc
+@using Domain.Models
+@model PagedList.IPagedList<Domain.Models.Report>
+
+@{
+    ViewBag.Title = "内容举报";
+}
+
+<div class="row">
+    <div class="widget-container fluid-height clearfix">
+            <div class="widget-content padded clearfix">
+                <table class="table table-striped table-hover">
+                    <tr>
+                        <th width="10%">
+                            举报类型
+                        </th>
+                        <th>
+                            Blog
+                        </th>
+                        <th>
+                            Time
+                        </th>
+                        <th width="20%">
+                            操作
+                        </th>
+
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.ReportType == ReportType.其他内容)
+                                {
+                                    Html.DisplayFor(modelItem => item.Content);
+                                }
+                                else
+                                {
+                                    Html.DisplayFor(modelItem => item.ReportType);
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details","Blog",new {id=item.BlogId})" target="_blank">@item.Blog.Title</a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TimeStamp)
+                            </td>
+                            <td>
+                                @Html.ActionLink("确认", "Confirm", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+                </table>
+                第 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 页，共 @Model.PageCount 页
+
+                @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new
+                        {
+                            page
+                        }))
+            </div>
+        </div>
+</div>
+
