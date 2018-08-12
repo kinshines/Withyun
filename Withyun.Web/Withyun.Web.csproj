@@ -12,6 +12,7 @@
     <PackageReference Include="nlog.web.aspnetcore" Version="4.5.4" />
     <PackageReference Include="SolrNet.Microsoft.DependencyInjection" Version="1.0.10" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageReference Include="x.pagedlist.mvc.core" Version="7.5.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,9 @@
-﻿@model Domain.Models.Report
+﻿@model Report
 <div class="modal fade" id="reportModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            @using (Ajax.BeginForm("Create", "Report", null, new AjaxOptions() {OnSuccess = "reportSuccess"}, new {@class = "form-horizontal"}))
-            {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(model => model.BlogId)
+            <form asp-controller="Report" asp-action="Create" ajax-success="reportSuccess" class="form-horizontal">
+                <input asp-for="BlogId" type="hidden" />
                 <div class="modal-header">
                     <button aria-hidden="true" class="close" data-dismiss="modal" type="button">&times;</button>
                     <h4 class="modal-title">
@@ -23,7 +21,7 @@
                     <div class="form-group" style="display: none">
                         <div class="col-md-3"></div>
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.Content, new { @class = "form-control" })
+                            <input asp-for="Content" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -31,7 +29,7 @@
                     <button class="btn btn-primary" type="submit">提交</button>
                     <button class="btn btn-default-outline" data-dismiss="modal" type="button">返回</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>

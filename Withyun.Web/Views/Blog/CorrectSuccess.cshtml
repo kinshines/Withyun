@@ -11,9 +11,9 @@
             <hr />
             <div class="widget-content padded">
                 <p>
-                    @Html.ActionLink("查看待审核的分享", "Verify", null, new { @class = "btn btn-primary" })
-                    @Html.ActionLink("查看内容违规的分享", "Report", null, new { @class = "btn btn-success" })
-                    @Html.ActionLink("管理我的分享", "Manage", null, new { @class = "btn btn-info" })
+                    <a asp-action="Verify" class="btn btn-primary">查看待审核的分享</a>
+                    <a asp-action="Report" class="btn btn-success">查看内容违规的分享</a>
+                    <a asp-action="Manage" class="btn btn-info">管理我的分享</a>
                 </p>
             </div>
         </div>

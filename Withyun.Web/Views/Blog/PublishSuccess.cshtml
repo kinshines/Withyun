@@ -11,9 +11,9 @@
             <hr />
             <div class="widget-content padded">
                 <p>
-                    @Html.ActionLink("查看分享页面", "Details", new { id = ViewBag.Id }, new { @class = "btn btn-primary" })
-                    @Html.ActionLink("再发一篇分享", "Edit", null, new { @class = "btn btn-success" })
-                    @Html.ActionLink("管理我的分享", "Manage", null, new { @class = "btn btn-info" })
+                    <a asp-action="Details" asp-route-id="ViewBag.Id" class="btn btn-primary">查看分享页面</a>
+                    <a asp-action="Edit" class="btn btn-success">再发一篇分享</a>
+                    <a asp-action="Manage" class="btn btn-info">管理我的分享</a>
                 </p>
             </div>
         </div>
