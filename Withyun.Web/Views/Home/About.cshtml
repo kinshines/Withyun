@@ -1,4 +1,4 @@
-﻿@model Withyun.ViewModels.MessageViewModel
+﻿@model Withyun.Web.ViewModels.MessageViewModel
 @{
     ViewBag.Title = "关于我们";
 }
@@ -38,22 +38,20 @@
                 或者向我们留言
             </div>
             <div class="widget-content padded" id="messageForm">
-                @using (Ajax.BeginForm("Message", "Home", null, new AjaxOptions {OnSuccess = "messageSuccess"}, new {@class = "form-horizontal"}))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary("", new {@class = "text-danger"})
+                <form asp-controller="Home" asp-action="Message" ajax-success="messageSuccess" class="form-horizontal">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label class="control-label col-md-1">您的留言</label>
                         <div class="col-md-7">
-                            @Html.TextAreaFor(model => model.Message, new {@class = "form-control", placeholder = "您的留言"})
-                            @Html.ValidationMessageFor(model => model.Message)
+                            <input asp-for="Message" class="form-control" placeholder="您的留言" />
+                            <span asp-validation-for="Message"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-1">联系方式</label>
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.Contacts, new {@class = "form-control", placeholder = "您的联系方式，手机号/邮箱/QQ"})
-                            @Html.ValidationMessageFor(model => model.Contacts)
+                            <input asp-for="Contacts" class="form-control" placeholder="您的联系方式，手机号/邮箱/QQ" />
+                            <span asp-validation-for="Contacts"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -61,7 +59,7 @@
                             <button class="btn btn-success"> 提交</button>
                         </div>
                     </div>
-                }
+                </form>
             </div>
             <div class="widget-content padded hidden" id="messageSuccessInfo">
                 <div class="alert alert-info">

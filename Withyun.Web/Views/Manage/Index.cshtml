@@ -1,8 +1,9 @@
-﻿@using Microsoft.AspNet.Identity
-@model Withyun.ViewModels.IndexViewModel
+﻿@model Withyun.Web.ViewModels.IndexViewModel
+@using System.Security.Claims
 @{
     ViewBag.Title = "账号设置";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <div class="page-title">
@@ -70,7 +71,7 @@
                                     <span>当前绑定的支付宝收款二维码：</span>
                                 </p>
                                 <p>
-                                    <img src="@Url.Content("~/images/alipay/"+User.Identity.GetUserId()+".jpg")" />
+                                    <img src="@Url.Content("~/images/alipay/"+userId+".jpg")" />
                                 </p>
                                 <p>
                                     @Html.ActionLink("修改", "UploadAlipay", null, new { @class = "btn btn-primary" })
@@ -93,7 +94,7 @@
                                     <span>当前绑定的微信收款二维码：</span>
                                 </p>
                                 <p>
-                                    <img src="@Url.Content("~/images/wechat/" + User.Identity.GetUserId() + ".jpg")" />
+                                    <img src="@Url.Content("~/images/wechat/" + userId + ".jpg")" />
                                 </p>
                                 <p>
                                     @Html.ActionLink("修改", "UploadWechat", null, new { @class = "btn btn-primary" })

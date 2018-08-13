@@ -1,4 +1,4 @@
-﻿@model Withyun.ViewModels.ChangeEmailViewModel
+﻿@model Withyun.Web.ViewModels.ChangeEmailViewModel
 @{
     ViewBag.Title = "修改邮箱";
 }
@@ -53,15 +53,13 @@
                 <i class="fa fa-reorder"></i>@ViewBag.Title
             </div>
             <div class="widget-content padded">
-                @using (Ajax.BeginForm("GenerateCode", "Manage", new AjaxOptions() { OnSuccess = "handleGenerateCode" },new {@class="form-horizontal",id="formCode"}))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary(true)
+                <form asp-controller="Manage" asp-action="GenerateCode" ajax-success="handleGenerateCode" class="form-horizontal" id="formCode">
+                    <div asp-validation-summary="ModelOnly"></div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.NewEmail, new { @class = "col-md-2 control-label" })
+                        <label asp-for="NewEmail" class="col-md-2 control-label"></label>
                         <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.NewEmail, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.NewEmail)
+                            <input asp-for="NewEmail" class="form-control" />
+                            <span asp-validation-for="NewEmail"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -69,7 +67,7 @@
                             <input type="submit" id="btnCode" value="发送验证码" class="btn btn-primary" />
                         </div>
                     </div>
-                }
+                </form>
                 
                 @using (Html.BeginForm("ChangeEmail", "Manage", FormMethod.Post, new { @class = "form-horizontal hidden", id = "formEmail" }))
                 {
