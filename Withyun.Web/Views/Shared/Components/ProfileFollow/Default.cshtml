@@ -1,0 +1,26 @@
+﻿@{ 
+    bool isFollowed = ViewBag.followed;
+    var followCss = isFollowed ? "hidden" : "";
+    var cancelCss = isFollowed ? "" : "hidden";
+}
+<div class="widget-container fluid-height">
+    <div class="widget-content padded">
+        <div class="profile-info clearfix">
+            <img width="220" height="220" class="social-avatar pull-left" src="@Url.Action("GetUserImg", "Manage", new { id = ViewBag.UserId })">
+            <div class="profile-details">
+                <p>
+                    <h3>@ViewBag.UserName</h3>
+                </p>
+                <form asp-controller="Follow" asp-action="Add" ajax-success="addFollowSuccess" id="addFollowForm" class="@followCss">
+                    <input type="hidden" name="distributor" value="@ViewBag.UserId" />
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>立即关注</button>
+                </form>
+                <form asp-controller="Follow" asp-action="Delete" ajax-success="deleteFollowSuccess" id="deleteFollowForm" class="@cancelCss">
+                    <input type="hidden" name="distributor" value="@ViewBag.UserId" />
+                    <label class="btn btn-default"><i class="fa fa-check"></i>已关注</label>
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i>取消关注</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

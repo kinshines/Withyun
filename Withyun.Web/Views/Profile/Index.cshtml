@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-3">
-        @Html.Action("Profile","Follow")
+        @await Component.InvokeAsync("ProfileFollow", new { id = ViewBag.userId })
     </div>
     <div class="col-md-9">
         <div class="widget-container fluid-height clearfix">
