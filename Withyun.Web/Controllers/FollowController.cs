@@ -40,7 +40,7 @@ namespace Withyun.Controllers
         }
 
         [AllowAnonymous]
-        public new ActionResult Profile(int id)
+        public ActionResult Profile(int id)
         {
             ViewBag.userId = id;
             ViewBag.userName = _followService.GetDistributorName(id);

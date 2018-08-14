@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Withyun.Core.Entities;
 
 namespace Withyun.Controllers
 {
@@ -21,10 +23,12 @@ namespace Withyun.Controllers
     {
         readonly AccountService _accountService;
         readonly IHostingEnvironment _env;
-        public ManageController(AccountService accountService, IHostingEnvironment env)
+        readonly SignInManager<User> _signInManager;
+        public ManageController(AccountService accountService, IHostingEnvironment env, SignInManager<User> signInManager)
         {
             _accountService = accountService;
             _env = env;
+            _signInManager = signInManager;
         }
 
         //
@@ -73,9 +77,10 @@ namespace Withyun.Controllers
             }
             user.PasswordHash = Security.Sha256(model.NewPassword);
             _accountService.Update(user);
-            var identity = _accountService.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, identity);
+            var identity = _accountService.CreateIdentity(user);
+            var principal = _accountService.CreatePrincipal(identity);
+            _signInManager.SignOutAsync();
+            _signInManager.Context.SignInAsync(principal, new AuthenticationProperties() { IsPersistent = false });
             return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
         }
 
@@ -96,9 +101,10 @@ namespace Withyun.Controllers
             }
             var userId = GetUserId();
             var user = _accountService.ValidateCode(userId, model.Code, model.NewEmail);
-            var identity = _accountService.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, identity);
+            var identity = _accountService.CreateIdentity(user);
+            var principal = _accountService.CreatePrincipal(identity);
+            _signInManager.SignOutAsync();
+            _signInManager.Context.SignInAsync(principal, new AuthenticationProperties() { IsPersistent = false });
             return RedirectToAction("Index", new { Message = ManageMessageId.ChangeEmailSuccess });
         }
 
