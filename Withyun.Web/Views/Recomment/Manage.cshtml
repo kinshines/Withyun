@@ -1,4 +1,5 @@
-﻿@model IPagedList<Recomment>
+﻿@using Withyun.Core.Enums
+@model IPagedList<Recomment>
 
 @{
     ViewBag.Title = "首页推荐";
@@ -22,19 +23,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.ActionLink("剧集", "Manage", new { category = RecommentCategory.剧集 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("电影", "Manage", new { category = RecommentCategory.电影 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("美剧", "Manage", new { category = RecommentCategory.美剧 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("韩剧", "Manage", new { category = RecommentCategory.韩剧 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("日剧", "Manage", new { category = RecommentCategory.日剧 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("动漫", "Manage", new { category = RecommentCategory.动漫 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("音乐", "Manage", new { category = RecommentCategory.音乐 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("游戏", "Manage", new { category = RecommentCategory.游戏 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("图书", "Manage", new { category = RecommentCategory.图书 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("综艺", "Manage", new { category = RecommentCategory.综艺 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("软件", "Manage", new { category = RecommentCategory.软件 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("资料", "Manage", new { category = RecommentCategory.资料 }, new { @class = "btn btn-info" })
-                        @Html.ActionLink("教育", "Manage", new { category = RecommentCategory.教育 }, new { @class = "btn btn-info" })
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.剧集" class="btn btn-info">剧集</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.电影" class="btn btn-info">电影</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.美剧" class="btn btn-info">美剧</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.韩剧" class="btn btn-info">韩剧</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.日剧" class="btn btn-info">日剧</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.动漫" class="btn btn-info">动漫</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.音乐" class="btn btn-info">音乐</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.游戏" class="btn btn-info">游戏</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.图书" class="btn btn-info">图书</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.综艺" class="btn btn-info">综艺</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.软件" class="btn btn-info">软件</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.资料" class="btn btn-info">资料</a>
+                        <a asp-action="Manage" asp-route-category="@RecommentCategory.教育" class="btn btn-info">教育</a>
                     </div>
                 }
                 <hr />
