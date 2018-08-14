@@ -15,7 +15,7 @@ namespace Withyun.Controllers
     public class ReportController : Controller
     {
         private readonly ReportService _reportService;
-        public ReportController(ReportService reportService,)
+        public ReportController(ReportService reportService)
         {
             _reportService = reportService;
         }

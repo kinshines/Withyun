@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
-using Domain.Services;
-using Withyun.ViewModels;
-using Domain.Helper;
 using System.Drawing;
-using NLogUtility;
+using Microsoft.AspNetCore.Authorization;
+using Withyun.Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
+using Withyun.Web.Models;
+using Withyun.Infrastructure.Utility;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Withyun.Controllers
 {
     [Authorize]
     public class ManageController : Controller
     {
-
-        readonly AccountService _accountService=new AccountService();
-        protected override void Dispose(bool disposing)
+        readonly AccountService _accountService;
+        readonly IHostingEnvironment _env;
+        public ManageController(AccountService accountService, IHostingEnvironment env)
         {
-            if (disposing)
-            {
-                _accountService.Dispose();
-            }
-            base.Dispose(disposing);
+            _accountService = accountService;
+            _env = env;
         }
 
         //
@@ -37,7 +36,7 @@ namespace Withyun.Controllers
                 : message == ManageMessageId.ChangeEmailSuccess ? "邮箱修改成功."
                 : message == ManageMessageId.Error ? "出错啦."
                 : "";
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             var user = _accountService.Find(userId);
             var model = new IndexViewModel
             {
@@ -65,7 +64,7 @@ namespace Withyun.Controllers
             {
                 return View(model);
             }
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             var user = _accountService.Find(userId);
             if (user.PasswordHash != Security.Sha256(model.OldPassword))
             {
@@ -95,7 +94,7 @@ namespace Withyun.Controllers
             {
                 return View(model);
             }
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             var user = _accountService.ValidateCode(userId, model.Code, model.NewEmail);
             var identity = _accountService.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
@@ -116,9 +115,9 @@ namespace Withyun.Controllers
 
         public ActionResult UploadAvatar()
         {
-            string imgUrl="/images/user/"+User.Identity.GetUserId()+".jpg";
-
-            if (System.IO.File.Exists(Server.MapPath(imgUrl)))
+            string imgUrl="/images/user/"+ GetUserId()+".jpg";
+            
+            if (_env.ContentRootFileProvider.GetFileInfo(imgUrl).Exists)
             {
                 ViewBag.ImgUrl = ".." + imgUrl;
             }
@@ -131,27 +130,29 @@ namespace Withyun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UploadAvatar(FormCollection form)
+        public ActionResult UploadAvatar(IFormFile fileField)
         {
             try
             {
-                HttpPostedFileBase file = Request.Files["fileField"];
 
                 string uploadFolder = "/images/user/";
-                string imgName = User.Identity.GetUserId()+".jpg";
+                string imgName = GetUserId() +".jpg";
                 string uploadPath = string.Empty;
-                uploadPath = Server.MapPath(uploadFolder);
-                file.SaveAs(uploadPath + imgName);
+                uploadPath = _env.ContentRootFileProvider.GetFileInfo(uploadFolder).PhysicalPath;
+                using(var stream=new FileStream(uploadPath+ imgName, FileMode.Create))
+                {
+                    fileField.CopyTo(stream);
+                }
 
                 try
                 {
                     //等比例缩放图片
                     uploadFolder = "/images/avatar/";
-                    uploadPath = Server.MapPath(uploadFolder);
-                    string zoomedPicFullPath = uploadPath + imgName;
+
+                    string zoomedPicFullPath = _env.ContentRootFileProvider.GetFileInfo(uploadFolder + imgName).PhysicalPath;
 
                     // 获取等比例缩放 UploadedImgUrl 后的图片路径
-                    Image newImg = ImgHandler.ZoomPicture(Image.FromStream(file.InputStream) , 50, 50);
+                    Image newImg = ImgHandler.ZoomPicture(Image.FromStream(fileField.OpenReadStream()) , 50, 50);
                     newImg.Save(zoomedPicFullPath);
                     newImg.Dispose();
                 }
@@ -170,20 +171,18 @@ namespace Withyun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UploadAlipay(FormCollection form)
+        public ActionResult UploadAlipay(IFormFile fileField)
         {
             try
             {
-                HttpPostedFileBase file = Request.Files["fileField"];
                 //等比例缩放图片
                 string uploadFolder = "/images/alipay/";
-                int userId = User.Identity.GetUserId<int>();
+                int userId = GetUserId();
                 string imgName = userId + ".jpg";
-                string uploadPath = Server.MapPath(uploadFolder);
-                string zoomedPicFullPath = uploadPath + imgName;
+                string zoomedPicFullPath = _env.ContentRootFileProvider.GetFileInfo(uploadFolder+ imgName).PhysicalPath;
 
                 // 获取等比例缩放 UploadedImgUrl 后的图片路径
-                Image newImg = ImgHandler.ZoomPictureProportionately(Image.FromStream(file.InputStream), 200, 200);
+                Image newImg = ImgHandler.ZoomPictureProportionately(Image.FromStream(fileField.OpenReadStream()), 200, 200);
                 newImg.Save(zoomedPicFullPath);
                 newImg.Dispose();
                 var user = _accountService.Find(userId);
@@ -199,20 +198,18 @@ namespace Withyun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UploadWechat(FormCollection form)
+        public ActionResult UploadWechat(IFormFile fileField)
         {
             try
             {
-                HttpPostedFileBase file = Request.Files["fileField"];
                 //等比例缩放图片
                 string uploadFolder = "/images/wechat/";
-                int userId = User.Identity.GetUserId<int>();
+                int userId = GetUserId();
                 string imgName = userId + ".jpg";
-                string uploadPath = Server.MapPath(uploadFolder);
-                string zoomedPicFullPath = uploadPath + imgName;
+                string zoomedPicFullPath = _env.ContentRootFileProvider.GetFileInfo(uploadFolder + imgName).PhysicalPath;
 
                 // 获取等比例缩放 UploadedImgUrl 后的图片路径
-                Image newImg = ImgHandler.ZoomPictureProportionately(Image.FromStream(file.InputStream), 200, 200);
+                Image newImg = ImgHandler.ZoomPictureProportionately(Image.FromStream(fileField.OpenReadStream()), 200, 200);
                 newImg.Save(zoomedPicFullPath);
                 newImg.Dispose();
                 var user = _accountService.Find(userId);
@@ -227,34 +224,34 @@ namespace Withyun.Controllers
         }
 
         [AllowAnonymous]
-        public string GetAvatar(string id)
+        public string GetAvatar(int? id)
         {
             return GetImg("avatar", id);
         }
 
         [AllowAnonymous]
-        public string GetAlipayImg(string id)
+        public string GetAlipayImg(int? id)
         {
             return GetImg("alipay", id);
         }
 
         [AllowAnonymous]
-        public string GetWechatImg(string id)
+        public string GetWechatImg(int? id)
         {
             return GetImg("wechat", id);
         }
         [AllowAnonymous]
-        public string GetUserImg(string id)
+        public string GetUserImg(int? id)
         {
             return GetImg("user", id);
         }
 
-        private string GetImg(string category, string id)
+        private string GetImg(string category, int? id)
         {
-            if (String.IsNullOrWhiteSpace(id))
-                id = User.Identity.GetUserId();
+            if (!id.HasValue)
+                id = GetUserId();
             string path = "~/images/" + category + "/" + id + ".jpg";
-            string diskPath = Server.MapPath(path);
+            string diskPath = _env.ContentRootFileProvider.GetFileInfo(path).PhysicalPath;
             if (System.IO.File.Exists(diskPath))
             {
                 //return File(diskPath, "image/jpeg");
@@ -268,7 +265,7 @@ namespace Withyun.Controllers
 
         public ActionResult GenerateCode(string newEmail)
         {
-            int useId = User.Identity.GetUserId<int>();
+            int useId = GetUserId();
             return Json(_accountService.GenerateCode(useId, newEmail));
         }
 
@@ -285,9 +282,9 @@ namespace Withyun.Controllers
 
         public ActionResult DeleteAlipay()
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             string path = "~/images/alipay/" + userId + ".jpg";
-            string diskPath = Server.MapPath(path);
+            string diskPath = _env.ContentRootFileProvider.GetFileInfo(path).PhysicalPath;
             if (System.IO.File.Exists(diskPath))
             {
                 System.IO.File.Delete(diskPath);
@@ -300,9 +297,9 @@ namespace Withyun.Controllers
 
         public ActionResult DeleteWechat()
         {
-            var userId = User.Identity.GetUserId<int>();
+            var userId = GetUserId();
             string path = "~/images/wechat/" + userId + ".jpg";
-            string diskPath = Server.MapPath(path);
+            string diskPath = _env.ContentRootFileProvider.GetFileInfo(path).PhysicalPath;
             if (System.IO.File.Exists(diskPath))
             {
                 System.IO.File.Delete(diskPath);
@@ -317,12 +314,9 @@ namespace Withyun.Controllers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
-        private IAuthenticationManager AuthenticationManager
+        private int GetUserId()
         {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
+            return Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         public enum ManageMessageId
