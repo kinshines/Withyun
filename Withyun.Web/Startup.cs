@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolrNet;
 using UploadImage;
+using Withyun.Core.Entities;
 using Withyun.Infrastructure.Data;
 using Withyun.Infrastructure.Services;
 using Withyun.Infrastructure.Utility;
@@ -56,6 +58,40 @@ namespace Withyun.Web
             services.AddScoped<ReviewService>();
             services.AddScoped<VoteDownService>();
             services.AddScoped<VoteUpService>();
+
+            services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+                options.User.RequireUniqueEmail = true;
+                //options.User.AllowedUserNameCharacters = "qwertyuiopasdfghjklzxcvbnm";
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<BlogContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(options => { });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSolrNet(Configuration["SolrUrl"]);
