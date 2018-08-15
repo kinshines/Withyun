@@ -10,6 +10,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="nlog" Version="4.5.7" />
     <PackageReference Include="nlog.web.aspnetcore" Version="4.5.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
     <PackageReference Include="SolrNet.Microsoft.DependencyInjection" Version="1.0.10" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageReference Include="x.pagedlist.mvc.core" Version="7.5.0" />
