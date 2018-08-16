@@ -39,13 +39,13 @@
                                 }
                             </td>
                             <td>
-                                <a href="@Url.Action("Details","Blog",new {id=item.BlogId})" target="_blank">@item.Blog.Title</a>
+                                <a asp-controller="Blog" asp-action="Details" asp-route-id="@item.BlogId" target="_blank">@item.Blog.Title</a>
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TimeStamp)
                             </td>
                             <td>
-                                @Html.ActionLink("确认", "Confirm", new { id = item.Id })
+                                <a asp-action="Confirm" asp-route-id="@item.Id">确认</a>
                             </td>
                         </tr>
                     }
