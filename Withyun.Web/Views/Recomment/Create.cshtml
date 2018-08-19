@@ -11,34 +11,32 @@
             </div>
             <hr />
             <div class="widget-content padded">
-                @using (Html.BeginForm("Create", "Recomment", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
-                {
-                    @Html.AntiForgeryToken()
+                <form asp-controller="Recomment" asp-action="Create" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-horizontal">
                         <p class="text-success">@ViewBag.Message</p>
-                        @Html.ValidationSummary(true)
+                        <div asp-validation-summary="ModelOnly"></div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
+                            <label asp-for="Title" class="control-label col-md-2"></label>
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Title)
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.BlogId, new { @class = "control-label col-md-2" })
+                            <label asp-for="BlogId" class="control-label col-md-2"></label>
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.BlogId, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.BlogId)
+                                <input asp-for="BlogId" class="form-control" />
+                                <span asp-validation-for="BlogId"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.CoverName, new { @class = "control-label col-md-2" })
+                            <label asp-for="CoverName" class="control-label col-md-2"></label>
                             <div class="col-md-10">
-                                <input type="file" title="上传封面" name="fileField" id="upload"  accept="image/*" />  
+                                <input type="file" title="上传封面" name="fileField" id="upload" accept="image/*" />
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Category, new { @class = "control-label col-md-2" })
+                            <label asp-for="Category" class="control-label col-md-2"></label>
                             <div class="col-md-10">
                                 <select class="select2able" multiple="" name="selectedCategory">
                                     <option value="0">剧集</option>
@@ -63,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>

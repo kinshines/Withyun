@@ -9,17 +9,16 @@
     <div class="col-md-12">
         <div class="widget-container fluid-height clearfix">
             <div class="widget-content padded clearfix">
-                @using (Html.BeginForm("Manage", "Recomment", FormMethod.Get, new { @class = "form-horizontal" }))
-                {
+                <form asp-controller="Recomment" asp-action="Manage" method="get" class="form-horizontal">
                     <div class="form-group">
                         <label class="control-label col-md-1">标题</label>
                         <div class="col-md-5">
-                            @Html.TextBox("recommentTitle", ViewBag.RecommentTitle as string, new { @class = "form-control", placeholder = "请输入标题" })
+                            <input name="recommentTitle" value="@ViewBag.RecommentTitle" class="form-control" placeholder="请输入标题" />
                             @Html.Hidden("category", "RecommentCategory")
                         </div>
                         <div class="col-md-5">
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>搜索</button>
-                            <a href="@Url.Action("Create")" class="btn btn-success"><i class="fa fa-plus"></i>添加推荐</a>
+                           <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i>添加推荐</a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -37,7 +36,7 @@
                         <a asp-action="Manage" asp-route-category="@RecommentCategory.资料" class="btn btn-info">资料</a>
                         <a asp-action="Manage" asp-route-category="@RecommentCategory.教育" class="btn btn-info">教育</a>
                     </div>
-                }
+                </form>
                 <hr />
                 <table class="table table-striped table-hover">
                     <tr>
@@ -60,7 +59,7 @@
                         var trClass = item.Top ? "success" : "";
                         <tr data-id="@item.Id" class="@trClass">
                             <td>
-                                @Html.ActionLink(item.Title, "Details", "Blog", new { id = item.BlogId }, new { target = "_blank" })
+                                <a asp-action="Details" asp-controller="Blog" asp-route-id="@item.BlogId" target="_blank">@item.Title</a>
                             </td>
                             <td>
                                 <img src="@item.CoverUrl" />

@@ -17,11 +17,11 @@
                             <img src="@recomment.CoverUrl" alt="@recomment.Title"/>
                         </div>
                         <div class="v-link">
-                            <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank" title="@recomment.Title"></a>
+                            <a asp-controller="Blog" asp-action="Details" asp-route-id="@recomment.BlogId" target="_blank" title="@recomment.Title"></a>
                         </div>
                         <div class="v-meta vb">
                             <div class="v-meta-title">
-                                <a href="@Url.Action("Details","Blog",new{id=@recomment.BlogId})" target="_blank">@recomment.Title</a>
+                                <a asp-controller="Blog" asp-action="Details" asp-route-id="@recomment.BlogId" target="_blank">@recomment.Title</a>
                             </div>
                         </div>
                     </div>
