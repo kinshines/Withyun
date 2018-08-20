@@ -9,49 +9,49 @@
     <div class="col-md-3">
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="@Url.Action("Manage", "Blog", null)">
+                <a asp-action="Manage" asp-controller="Blog">
                     <p>
                         已发布的分享
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("Invalide", "Blog", null)">
+                <a asp-action="Invalide" asp-controller="Blog">
                     <p>
                         链接失效的分享
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("Report", "Blog", null)">
+                <a asp-action="Report" asp-controller="Blog">
                     <p>
                         内容违规的分享
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("Verify", "Blog", null)">
+                <a asp-action="Verify" asp-controller="Blog">
                     <p>
                         待审核的分享
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("Index", "Collection", null)">
+                <a asp-action="Index" asp-controller="Collection">
                     <p>
                         我的收藏
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("Index", "Follow", null)">
+                <a asp-action="Index" asp-controller="Follow">
                     <p>
                         我的关注
                     </p>
                 </a>
             </li>
             <li class="list-group-item active">
-                <a href="@Url.Action("Index", "Notification", null)">
+                <a asp-action="Index" asp-controller="Notification">
                     <p>
                         我的消息
                     </p>
