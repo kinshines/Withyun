@@ -11,35 +11,35 @@
     <div class="col-sm-3">
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="@Url.Action("ChangePassword", "Manage", null)">
+                <a asp-controller="Manage" asp-action="ChangePassword">
                     <p>
                         修改密码
                     </p>
                 </a>
             </li>
             <li class="list-group-item active">
-                <a href="@Url.Action("ChangeEmail", "Manage", null)">
+                <a asp-controller="Manage" asp-action="ChangeEmail">
                     <p>
                         修改邮箱
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadAvatar", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadAvatar">
                     <p>
                         头像设置
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadAlipay", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadAlipay">
                     <p>
                         支付宝收款二维码
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadWechat", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadWechat">
                     <p>
                         微信收款二维码
                     </p>
