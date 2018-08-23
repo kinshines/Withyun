@@ -16,35 +16,35 @@
     <div class="col-md-3">
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="@Url.Action("ChangePassword", "Manage", null)">
+                <a asp-controller="Manage" asp-action="ChangePassword">
                     <p>
-                       修改密码
+                        修改密码
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("ChangeEmail", "Manage", null)">
+                <a asp-controller="Manage" asp-action="ChangeEmail">
                     <p>
                         修改邮箱
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadAvatar", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadAvatar">
                     <p>
                         头像设置
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadAlipay", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadAlipay">
                     <p>
                         支付宝收款二维码
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadWechat", "Manage", null)">
+                <a asp-controller="Manage" asp-action="UploadWechat">
                     <p>
                         微信收款二维码
                     </p>
@@ -60,7 +60,7 @@
             <div class="widget-content padded">
                 <p class="text-success">@ViewBag.StatusMessage</p>
                 <div class="alert alert-info">
-                    邮箱：@Model.Email @Html.ActionLink("修改", "ChangeEmail", null, new {@class="btn btn-primary"})
+                    邮箱：@Model.Email <a asp-action="ChangeEmail" class="btn btn-primary">修改</a>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -74,15 +74,16 @@
                                     <img src="@Url.Content("~/images/alipay/"+userId+".jpg")" />
                                 </p>
                                 <p>
-                                    @Html.ActionLink("修改", "UploadAlipay", null, new { @class = "btn btn-primary" })
+                                    <a asp-action="UploadAlipay" class="btn btn-primary">修改</a>
                                 </p>
-                                
+
                             }
                             else
                             {
-                                <span>尚未绑定支付宝收款二维码</span> 
-                                @Html.ActionLink("立即绑定", "UploadAlipay", null, new { @class = "btn btn-primary" }) <br/>
-                                @Html.ActionLink("怎样获得支付宝收款二维码？", "AlipayTutorial", null, new { @class = "text-warning", target = "_blank" })
+                                <span>尚未绑定支付宝收款二维码</span>
+                                <a asp-action="UploadAlipay" class="btn btn-primary">立即绑定</a>
+                                <br />
+                                <a asp-action="AlipayTutorial"class = "text-warning" target = "_blank">怎样获得支付宝收款二维码？</a>
                             }
                         </div>
                     </div>
@@ -97,15 +98,15 @@
                                     <img src="@Url.Content("~/images/wechat/" + userId + ".jpg")" />
                                 </p>
                                 <p>
-                                    @Html.ActionLink("修改", "UploadWechat", null, new { @class = "btn btn-primary" })
+                                    <a asp-action="UploadWechat" class="btn btn-primary">修改</a>
                                 </p>
 
                             }
                             else
                             {
-                                <span>尚未绑定微信收款二维码</span> 
-                                @Html.ActionLink("立即绑定", "UploadWechat", null, new { @class = "btn btn-primary" }) <br/>
-                                @Html.ActionLink("怎样获得微信收款二维码？", "WechatTutorial", null, new { @class = "text-warning", target = "_blank" })
+                                <span>尚未绑定微信收款二维码</span>
+                                <a asp-action="UploadWechat" class="btn btn-primary">立即绑定</a>
+                                <a asp-action="WechatTutorial" class="text-warning" target="_blank">怎样获得微信收款二维码？</a>
                             }
                         </div>
                     </div>
