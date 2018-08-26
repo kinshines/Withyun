@@ -12,35 +12,35 @@
     <div class="col-sm-3">
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="@Url.Action("ChangePassword", "Manage", null)">
+                <a asp-action="ChangePassword" asp-controller="Manage">
                     <p>
                         修改密码
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("ChangeEmail", "Manage", null)">
+                <a asp-action="ChangeEmail" asp-controller="Manage">
                     <p>
                         修改邮箱
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadAvatar", "Manage", null)">
+                <a asp-action="UploadAvatar" asp-controller="Manage">
                     <p>
                         头像设置
                     </p>
                 </a>
             </li>
             <li class="list-group-item active">
-                <a href="@Url.Action("UploadAlipay", "Manage", null)">
+                <a asp-action="UploadAlipay" asp-controller="Manage">
                     <p>
                         支付宝收款二维码
                     </p>
                 </a>
             </li>
             <li class="list-group-item">
-                <a href="@Url.Action("UploadWechat", "Manage", null)">
+                <a asp-action="UploadWechat" asp-controller="Manage">
                     <p>
                         微信收款二维码
                     </p>
@@ -54,9 +54,7 @@
                 <i class="fa fa-reorder"></i>@ViewBag.Title
             </div>
             <div class="widget-content padded avator-btn-wrap">
-                @using (Html.BeginForm("UploadAlipay", "Manage", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
-                {
-                    @Html.AntiForgeryToken()
+                <form asp-controller="Manage" asp-action="UploadAlipay" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
                         <div class="col-md-3">
                             <img src="@Url.Action("GetAlipayImg")">
@@ -65,13 +63,13 @@
                     <div class="form-group">
                         <div class="col-md-1">
                             <a href="javascript:void(0)" class="btn btn-primary">上传二维码</a>
-                            <input type="file" title="上传二维码" name="fileField" id="upload" onchange="submit()" accept="image/*" />  
+                            <input type="file" title="上传二维码" name="fileField" id="upload" onchange="submit()" accept="image/*" />
                         </div>
                         <div class="col-md-1 col-md-offset-1">
-                            @Html.ActionLink("删除二维码", "DeleteAlipay", null, new { @class = "btn btn-danger" })
+                            <a asp-action="DeleteAlipay" class="btn btn-danger">删除二维码</a>
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>
