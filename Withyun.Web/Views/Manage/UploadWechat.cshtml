@@ -53,9 +53,7 @@
                 <i class="fa fa-reorder"></i>@ViewBag.Title
             </div>
             <div class="widget-content padded avator-btn-wrap">
-                @using (Html.BeginForm("UploadWeChat", "Manage", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
-                {
-                    @Html.AntiForgeryToken()
+                <form asp-action="UploadWeChat" asp-controller="Manage" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
                         <div class="col-md-3">
                             <img src="@Url.Action("GetWeChatImg")">
@@ -64,13 +62,13 @@
                     <div class="form-group">
                         <div class="col-md-1">
                             <a href="javascript:void(0)" class="btn btn-primary">上传二维码</a>
-                            <input type="file" title="上传二维码" name="fileField" id="upload" onchange="submit()" accept="image/*" />  
+                            <input type="file" title="上传二维码" name="fileField" id="upload" onchange="submit()" accept="image/*" />
                         </div>
                         <div class="col-md-1 col-md-offset-1">
-                            @Html.ActionLink("删除二维码","DeleteWechat",null,new{@class="btn btn-danger"})
+                            <a asp-action="DeleteWechat" class="btn btn-danger">删除二维码</a>
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>

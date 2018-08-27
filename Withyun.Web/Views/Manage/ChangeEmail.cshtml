@@ -69,15 +69,13 @@
                     </div>
                 </form>
                 
-                @using (Html.BeginForm("ChangeEmail", "Manage", FormMethod.Post, new { @class = "form-horizontal hidden", id = "formEmail" }))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary()
+                <form asp-controller="Manage" asp-action="ChangeEmail" method="post" class="form-horizontal hidden" id="formEmail">
+                    <div asp-validation-summary="ModelOnly"></div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Code, new { @class = "col-md-2 control-label" })
+                        <label asp-for="Code" class="col-md-2 control-label"></label>
                         <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.Code, new { @class = "form-control", placeholder = "6位数验证码" })
-                            @Html.ValidationMessageFor(m => m.Code)
+                            <input asp-for="Code" class="form-control" placeholder="6位数验证码" />
+                            <span asp-validation-for="Code"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -85,7 +83,7 @@
                             <input type="submit" value="确定" class="btn btn-primary" />
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>

@@ -54,9 +54,7 @@
                 <i class="fa fa-reorder"></i>@ViewBag.Title
             </div>
             <div class="widget-content padded avator-btn-wrap">
-                @using (Html.BeginForm("UploadAvatar", "Manage", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
-                {
-                    @Html.AntiForgeryToken()
+                <form asp-action="Manage" asp-controller="UploadAvatar" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
                         <div class="col-md-3">
                             <img src="@Url.Action("GetUserImg")" width="200" height="200">
@@ -65,10 +63,10 @@
                     <div class="form-group">
                         <div class="col-md-1">
                             <a href="javascript:void(0)" class="btn btn-primary">上传头像</a>
-                            <input type="file" title="上传头像" name="fileField" id="upload" onchange="submit()" accept="image/*" />  
+                            <input type="file" title="上传头像" name="fileField" id="upload" onchange="submit()" accept="image/*" />
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>
