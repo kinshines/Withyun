@@ -93,7 +93,11 @@ namespace Withyun.Web
                 options.SlidingExpiration = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddMvcOptions(opts =>
+                opts.ModelBindingMessageProvider
+                .SetValueMustNotBeNullAccessor(value => "字段 {0} 是必填项")
+                );
             services.AddSolrNet(Configuration["SolrUrl"]);
             services.Configure<UploadProfile>(Configuration.GetSection("UploadProfile"));
         }
